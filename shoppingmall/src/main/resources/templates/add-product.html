@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>add-product</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .btn-reset {
+            background-color: green;
+            color: white;
+        }
+        .btn-submit {
+            background-color: blue;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: red;
+            color: white;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div th:replace="~{header :: content}"></div>
+        <h2>상품 추가</h2>
+        <form id="addProductForm">
+            <div class="form-group">
+                <label for="productName">상품 이름</label>
+                <input type="text" class="form-control" id="productName" name="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="price">가격</label>
+                <input type="number" class="form-control" id="price" name="price" required>
+            </div>
+            <div class="form-group">
+                <label for="stock">수량</label>
+                <input type="number" class="form-control" id="stock" name="stock" required>
+            </div>
+            <button type="reset" class="btn btn-reset">리셋</button>
+            <button type="submit" class="btn btn-submit" id="submitBtn">제출</button>
+            <a href="/products" class="btn btn-cancel">취소</a>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function (){
+            $('#submitBtn').click(function (){
+                const productData = {
+                    name: $('#productName').val(),
+                    price: parseInt($('#price').val()),
+                    stock: parseInt($('#stock').val())
+                };
+
+                $.ajax({
+                    url: '/api/products',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(productData),
+                    success: function (){
+                        alert('상품이 추가되었습니다.');
+                        window.location.href = '/products';
+                    },
+                    error: function (xhr, status, error){
+                        alert('상품 추가에 실패했습니다: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div th:replace="~{header :: content}"></div>
+        <div class="text-center md-4" style="padding: 5px;">
+            <button id="loadProductButton" class="btn btn-primary">상품 목록 조회</button>
+        </div>
+        <ul id="productsList" class="list-group">
+            <!-- 상품 목록 추가되는 곳 -->
+        </ul>
+        <script>
+            let isListVisible = false;
+            document.getElementById('loadProductButton').addEventListener('click', function (){
+                if(isListVisible){
+                    document.getElementById('productsList').style.display='none';
+                    isListVisible = false;
+                    return;
+                }
+
+                fetch('/api/products')
+                    .then(Response => {
+                        if(!Response.ok){
+                            throw new Error('Network response was not ok');
+                        }
+                        return Response.json();
+                    })
+                    .then(data => {
+                        const productsList = document.getElementById('productsList');
+                        productsList.innerHTML = '';
+
+                        data.products.forEach(product => {
+                            const listItem = document.createElement('li');
+                            listItem.className = 'list-group-item';
+                            listItem.innerHTML = `<span>${product.id}</span> -
+                                                  <span>${product.name}</span> -
+                                                  <span>${product.price}</span> -
+                                                  <span>${product.stock}</span>
+                                                  <button class="btn btn-info btn-sm float-right" onclick="goToProductDetail(${product.id})">상세 보기</button>`;
+                            productsList.appendChild(listItem);
+                        });
+
+                        productsList.style.display = 'block';
+                        isListVisible = true;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching products:', error);
+                    });
+            });
+
+            function goToProductDetail(productId){
+                window.location.href = `/product-detail?id=${productId}`;
+            }
+        </script>
+    </div>
+</body>
+</html>
