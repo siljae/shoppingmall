@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: shoppingmall
+  datasource:
+    url: ENC(jjh9WWdB0z22gcet0w3K1z5HQqqC4/bK9BL2TOo64b5IzUB/hgv1HPeUsl3Lv0JvHWd5SvtpsVvoLcCc0sNKPuckpJVyvDaXuLd1gFAwbAc=)
+    username: ENC(bdEJoVuvInRp4Ng+5FDT3qsy5HOMq6UQ244H+EGffRSKnhHzMScetHSHt+bI8V9Vnzfjes2r+zWY/NTKoCcBzw==)
+    password: ENC(96YolAAQfhHhjz04sS+qn1BaBnsV4mJLxhcKtMNcGqKbf8dw5DVLDN1ckXiUjGMr)
+    driver-class-name: org.mariadb.jdbc.Driver
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml

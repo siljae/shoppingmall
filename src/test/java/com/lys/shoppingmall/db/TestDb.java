@@ -16,7 +16,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-@TestPropertySource(properties = "jasypt.encryptor.password=key")
+@TestPropertySource(properties = "jasypt.encryptor.password=8tYhG6jK")
 public class TestDb {
 
 //    private final ProductMapper productMapper;
@@ -45,6 +45,7 @@ public class TestDb {
 
         productMapper.insertProduct(newProduct);
 
+        System.out.println("id : " + newProduct.getId());
         Product addedProduct = productMapper.getProductById(newProduct.getId());
         if(addedProduct != null)
             System.out.println(addedProduct.toString());
@@ -82,7 +83,7 @@ public class TestDb {
 
     @Test
     public void testDeleteProduct(){
-        int id = 15;
+        int id = 27;
 
         Product beforeProduct = productMapper.getProductById(id);
 
