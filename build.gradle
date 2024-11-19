@@ -24,7 +24,7 @@ dependencies {
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'  // Jasypt 암호화 알고리즘
 	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3'  				// MariaDB
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'		// thymeleaf
-	implementation 'org.thymeleaf:thymeleaf-spring5'
+	implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
 	implementation "org.projectlombok:lombok:1.18.26"  							// Lombok 추가
 	annotationProcessor 'org.projectlombok:lombok:1.18.26'  					// Lombok 어노테이션 프로세서 추가
 	compileOnly 'org.projectlombok:lombok:1.18.26'  							// Lombok 컴파일 추가
