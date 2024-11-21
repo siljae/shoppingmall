@@ -1,4 +1,4 @@
-package com.lys.shoppingmall;
+package com.lys.shoppingmall.config;
 
 import org.assertj.core.api.Assertions;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

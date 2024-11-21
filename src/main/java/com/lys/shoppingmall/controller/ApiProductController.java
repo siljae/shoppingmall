@@ -1,8 +1,8 @@
 package com.lys.shoppingmall.controller;
 
-import com.lys.shoppingmall.model.ProductListResponse;
-import com.lys.shoppingmall.model.ProductRequest;
-import com.lys.shoppingmall.model.ProductResponse;
+import com.lys.shoppingmall.model.response.ProductListResponse;
+import com.lys.shoppingmall.model.request.ProductRequest;
+import com.lys.shoppingmall.model.response.ProductResponse;
 import com.lys.shoppingmall.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +21,7 @@ public class ApiProductController {
         return productService.getAllProducts();
     }
 
+    // 얘 쓸 곳이 없는데 지울까.. 굳이 필요한가..?
     @GetMapping("/api/products/{productId}")
     public ResponseEntity<ProductResponse> getProductDetail(@PathVariable("productId") int productId){
         ProductResponse productDetail = productService.getById(productId);

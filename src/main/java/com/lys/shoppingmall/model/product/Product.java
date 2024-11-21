@@ -1,4 +1,4 @@
-package com.lys.shoppingmall.model;
+package com.lys.shoppingmall.model.product;
 
 import lombok.Getter;
 import lombok.Setter;
