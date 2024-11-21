@@ -1,10 +1,12 @@
-package com.lys.shoppingmall.model;
+package com.lys.shoppingmall.model.response;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ProductResponse {
     private int id;
     private String name;

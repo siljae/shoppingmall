@@ -1,4 +1,4 @@
-package com.lys.shoppingmall.model;
+package com.lys.shoppingmall.model.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

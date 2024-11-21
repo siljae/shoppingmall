@@ -9,19 +9,51 @@
 <div class="container mt-4">
   <div th:replace="~{header :: content}"></div>
 
-  <h2 id="productName">상품 이름</h2>
-  <div>가격: <span id="productPrice">가격</span> 원</div>
-  <div>수량: <span id="productStock">수량</span> 개</div>
+  <h2 th:if="${product}" th:text="${product.name}" id="productName">상품 이름</h2>
+  <div th:if="${product}">가격: <span th:text="${product.price}" id="productPrice">가격</span> 원</div>
+  <div th:if="${product}">수량: <span th:text="${product.stock}" id="productStock">수량</span> 개</div>
   <div class="mt-3">
     <button class="btn btn-success">담기</button>
     <button class="btn btn-warning">구매</button>
-    <button class="btn btn-primary" onclick="goToProductEdit()">수정</button>
+    <button class="btn btn-primary" id="updateBtn">수정</button>
     <button class="btn btn-danger" id="deleteBtn">삭제</button>
   </div>
 
-  <div id="errorMessage" class="alert alert-warning mt-4" style="display: none;">
-    상품을 찾을 수 없습니다.
+  <!-- 상품 수정 모달 다이얼로그 -->
+  <div class="modal" id="confirmUpdateModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">상품 수정</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editProductForm">
+            <div class="form-group">
+              <label for="updateProductName">상품 이름</label>
+              <input type="text" class="form-control" id="updateProductName" name="updateProductName" th:value="${product.name}" required>
+            </div>
+            <div class="form-group">
+              <label for="updateProductPrice">가격</label>
+              <input type="number" class="form-control" id="updateProductPrice" name="updateProductPrice" th:value="${product.price}" required>
+            </div>
+            <div class="form-group">
+              <label for="updateProductStock">수량</label>
+              <input type="number" class="form-control" id="updateProductStock" name="updateProductStock" th:value="${product.stock}" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+          <button type="button" class="btn btn-primary" id="confirmUpdateBtn">수정</button>
+        </div>
+      </div>
+    </div>
   </div>
+
+
   <!-- 상품 삭제 모달 다이얼로그 -->
   <div class="modal" id="confirmDeleteModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -48,23 +80,35 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get('id');
+<script th:inline="javascript">
+  const productId = /*[[${product.id}]]*/0;
+  console.log(productId)
 
-  $.get(`/api/products/${productId}`)
-          .done(function (data) {
-            $('#productName').text(data.name);
-            $('#productPrice').text(data.price);
-            $('#productStock').text(data.stock);
-          })
-          .fail(function () {
-            $('#errorMessage').show();
-          });
+  $('#updateBtn').on('click', function () {
+    $('#confirmUpdateModal').modal('show');
+  })
 
-  function goToProductEdit(){
-    window.location.href = `/update-product?id=${productId}`;
-  }
+  $('#confirmUpdateBtn').on('click', function () {
+    const product = {
+      name: $('#confirmUpdateModal #updateProductName').val(),
+      price: $('#confirmUpdateModal #updateProductPrice').val(),
+      stock: $('#confirmUpdateModal #updateProductStock').val()
+    };
+
+    $.ajax({
+      url: `/api/products/${productId}`,
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(product),
+      success: function () {
+        alert('상품 수정 완료!');
+        window.location.href = '/products';
+      },
+      error: function (xhr, status, error) {
+        alert('상품 수정 실패 : ' + error)
+      }
+    });
+  });
 
   $('#deleteBtn').on('click', function () {
     $('#confirmDeleteModal').modal('show');

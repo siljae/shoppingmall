@@ -1,7 +1,7 @@
 package com.lys.shoppingmall.config;
 
 import com.lys.shoppingmall.exception.ServiceException;
-import com.lys.shoppingmall.model.ErrorResponse;
+import com.lys.shoppingmall.model.error.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

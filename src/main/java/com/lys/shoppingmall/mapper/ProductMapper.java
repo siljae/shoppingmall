@@ -1,6 +1,6 @@
 package com.lys.shoppingmall.mapper;
 
-import com.lys.shoppingmall.model.Product;
+import com.lys.shoppingmall.model.product.Product;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
