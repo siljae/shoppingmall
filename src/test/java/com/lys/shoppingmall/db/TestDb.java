@@ -12,7 +12,7 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-@TestPropertySource(properties = "jasypt.encryptor.password=8tYhG6jK")
+@TestPropertySource(properties = "jasypt.encryptor.password=")
 public class TestDb {
 
 //    private final ProductMapper productMapper;
