@@ -5,6 +5,17 @@ CREATE TABLE products (
     stock INT NOT NULL
 );
 
+CREATE TABLE orders(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    total DECIMAL(10, 2) NOT NULL,
+    order_date DATETIME NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+DROP TABLE orders;
+
 INSERT INTO products (name, price, stock) VALUES
 ('사과', 1000, 50),
 ('바나나', 800, 30),
@@ -22,3 +33,5 @@ INSERT INTO products (name, price, stock) VALUES
 ('오리 고기', 18000, 5),
 ('양고기', 20000, 3),
 ('생선', 7000, 7);
+
+INSERT INTO orders (product_id, quantity, total, order_date) VALUES (1, 1, 1000, '2024-11-22 19:41:00');

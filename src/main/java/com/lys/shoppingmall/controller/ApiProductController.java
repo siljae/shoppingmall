@@ -21,19 +21,6 @@ public class ApiProductController {
         return productService.getAllProducts();
     }
 
-    // 얘 쓸 곳이 없는데 지울까.. 굳이 필요한가..?
-    @GetMapping("/api/products/{productId}")
-    public ResponseEntity<ProductResponse> getProductDetail(@PathVariable("productId") int productId){
-        ProductResponse productDetail = productService.getById(productId);
-
-        if(productDetail != null){
-            return ResponseEntity.ok(productDetail);
-        }
-        else{
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PostMapping("/api/products")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request){
         ProductResponse newProduct = productService.addProduct(request);

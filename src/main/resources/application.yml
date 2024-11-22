@@ -15,5 +15,6 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
 
-#mybatis:
-#  mapper-locations: classpath:mapper/*.xml
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

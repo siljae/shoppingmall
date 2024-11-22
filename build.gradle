@@ -34,10 +34,11 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
 tasks.withType(JavaCompile).configureEach {
 	options.compilerArgs << '-parameters'
+}
+
+test {
+	useJUnitPlatform()
+	systemProperty "jasypt.encryptor.password", project.getProperties().get("jasypt.encryptor.password")
 }
