@@ -1,31 +1,28 @@
-package com.lys.shoppingmall.db;
+package com.lys.shoppingmall.database;
 
+import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.mapper.ProductMapper;
+import com.lys.shoppingmall.model.order.Order;
 import com.lys.shoppingmall.model.product.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
 @Transactional
-@TestPropertySource(properties = "jasypt.encryptor.password=8tYhG6jK")
-public class TestDb {
-
-//    private final ProductMapper productMapper;
-//
-//    public TestDb(ProductMapper productMapper) {
-//        this.productMapper = productMapper;
-//    }
-
+@ActiveProfiles("test")
+public class ProductTest {
     @Autowired
     private ProductMapper productMapper;
 
     @Test
-    public void testSelectProducts(){
+    public void selectProductsTest(){
         List<Product> products = productMapper.getAllProducts();
         for(Product product : products){
             System.out.println(product.toString());
@@ -33,7 +30,7 @@ public class TestDb {
     }
 
     @Test
-    public void testAddProduct(){
+    public void addProductTest(){
         Product newProduct = new Product();
         newProduct.setName("돼지감자");
         newProduct.setPrice(1000);
@@ -51,7 +48,7 @@ public class TestDb {
     }
 
     @Test
-    public void testByIdProduct(){
+    public void byIdProductTest(){
         Product idProduct = productMapper.getProductById(99);
 
         if(idProduct != null)
@@ -61,7 +58,7 @@ public class TestDb {
     }
 
     @Test
-    public void testUpdateProduct(){
+    public void updateProductTest(){
         Product updateProduct = new Product();
         updateProduct.setId(15);
         updateProduct.setName("완도김");
@@ -78,7 +75,7 @@ public class TestDb {
     }
 
     @Test
-    public void testDeleteProduct(){
+    public void deleteProductTest(){
         int id = 27;
 
         Product beforeProduct = productMapper.getProductById(id);
@@ -96,4 +93,6 @@ public class TestDb {
         else
             System.out.println("상품 삭제 완료 : afterProduct가 null 입니다.");
     }
+
+
 }

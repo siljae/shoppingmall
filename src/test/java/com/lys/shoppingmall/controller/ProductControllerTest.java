@@ -25,7 +25,7 @@ public class ProductControllerTest {
 
     @Test
     @DisplayName("상품 상세 정보 가져오기")
-    public void testDetailProduct() throws Exception{
+    public void productDetailTest() throws Exception{
         int productId = 1;
         ProductResponse productResponse = new ProductResponse(productId, "닭가슴살", 100, 10);
 
