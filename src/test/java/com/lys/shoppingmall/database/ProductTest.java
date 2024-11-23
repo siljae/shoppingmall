@@ -16,7 +16,6 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("test")
 public class ProductTest {
     @Autowired
     private ProductMapper productMapper;

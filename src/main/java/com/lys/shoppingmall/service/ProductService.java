@@ -1,16 +1,14 @@
 package com.lys.shoppingmall.service;
 
+import com.lys.shoppingmall.exception.OutOfStockException;
 import com.lys.shoppingmall.exception.ProductNotFoundException;
 import com.lys.shoppingmall.mapper.ProductMapper;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.ProductRequest;
-import com.lys.shoppingmall.model.response.ProductListResponse;
-import com.lys.shoppingmall.model.response.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -20,25 +18,20 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    public ProductListResponse getAllProducts(){
-        List<Product> products = productMapper.getAllProducts();
-        List<ProductResponse> productsResponse = products.stream()
-                .map(product -> new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock()))
-                .collect(Collectors.toList());
-        return new ProductListResponse(productsResponse);
+    public List<Product> getAllProducts(){
+        return productMapper.getAllProducts();
     }
 
-    public ProductResponse getById(int id){
+    public Product getById(int id){
         Product product = productMapper.getProductById(id);
 
         if(product == null){
-            throw new ProductNotFoundException("Product with ID " + id + " not found.");
+            throw new ProductNotFoundException(id);
         }
-
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        return product;
     }
 
-    public ProductResponse addProduct(ProductRequest request){
+    public Product addProduct(ProductRequest request){
         Product product = new Product();
         product.setName(request.getName());
         product.setPrice(request.getPrice());
@@ -46,15 +39,15 @@ public class ProductService {
 
         productMapper.insertProduct(product);
 
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        return product;
     }
 
     @Transactional
-    public ProductResponse updateProduct(int id, ProductRequest request){
+    public Product updateProduct(int id, ProductRequest request){
         Product product = productMapper.getProductById(id);
 
         if(product == null){
-            throw new ProductNotFoundException("Product with ID " + id + " not found.");
+            throw new ProductNotFoundException(id);
         }
 
         if(request.getName() != null)
@@ -68,11 +61,26 @@ public class ProductService {
 
         productMapper.updateProduct(product);
 
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        return product;
     }
 
     @Transactional
     public void deleteProduct(int id){
         productMapper.deleteProduct(id);
+    }
+
+    @Transactional
+    public void reduceStock(int id, int quantity){
+        Product product = productMapper.getProductById(id);
+        if(product == null){
+            throw new ProductNotFoundException(id);
+        }
+
+        if(product.getStock() < quantity){
+            throw new OutOfStockException(product.getId());
+        }
+
+        product.setStock(product.getStock() - quantity);
+        productMapper.updateProductStock(product);
     }
 }

@@ -10,9 +10,5 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class OrderRequest {
-    private int id;
     private int productId;
-    private int quantity;
-    private double total;
-    private LocalDateTime orderDate;
 }

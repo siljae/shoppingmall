@@ -1,6 +1,6 @@
 package com.lys.shoppingmall.controller;
 
-import com.lys.shoppingmall.exception.ProductNotFoundException;
+import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.response.ProductResponse;
 import com.lys.shoppingmall.service.ProductService;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,8 @@ public class ProductController {
 
     @GetMapping("/products/{productId}")
     public String detailProduct(@PathVariable("productId") int productId, Model model){
-        ProductResponse productResponse = productService.getById(productId);
+        Product product = productService.getById(productId);
+        ProductResponse productResponse = new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock());
         model.addAttribute("product", productResponse);
         return "product-detail";
     }

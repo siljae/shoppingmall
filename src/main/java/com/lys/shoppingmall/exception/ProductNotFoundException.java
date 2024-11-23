@@ -10,8 +10,8 @@ public class ProductNotFoundException extends NotFoundException {
     private final String errorCode = "000001";
     private final String errorMessage;
 
-    public ProductNotFoundException(String productId){
-        super("productId: " + productId + " is not found");
+    public ProductNotFoundException(int productId){
+        super("Product with ID " + productId + " is not found.");
         errorMessage = "product not found (" + productId + ")";
     }
 }

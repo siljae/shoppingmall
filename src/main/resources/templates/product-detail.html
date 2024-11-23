@@ -13,8 +13,7 @@
   <div th:if="${product}">가격: <span th:text="${product.price}" id="productPrice">가격</span> 원</div>
   <div th:if="${product}">수량: <span th:text="${product.stock}" id="productStock">수량</span> 개</div>
   <div class="mt-3">
-    <button class="btn btn-success">담기</button>
-    <button class="btn btn-warning">구매</button>
+    <button class="btn btn-warning" id="purchaseBtn">구매</button>
     <button class="btn btn-primary" id="updateBtn">수정</button>
     <button class="btn btn-danger" id="deleteBtn">삭제</button>
   </div>
@@ -82,12 +81,13 @@
 
 <script th:inline="javascript">
   const productId = /*[[${product.id}]]*/0;
-  console.log(productId)
 
+  // 상품 수정 모달
   $('#updateBtn').on('click', function () {
     $('#confirmUpdateModal').modal('show');
   })
 
+  // 상품 수정
   $('#confirmUpdateBtn').on('click', function () {
     const product = {
       name: $('#confirmUpdateModal #updateProductName').val(),
@@ -110,10 +110,12 @@
     });
   });
 
+  // 상품 삭제 모달
   $('#deleteBtn').on('click', function () {
     $('#confirmDeleteModal').modal('show');
   })
 
+  // 상품 삭제
   $('#confirmDeleteBtn').on('click', function () {
     $.ajax({
       url: `/api/products/${productId}`,
@@ -124,6 +126,31 @@
       },
       error: function (xhr, status, error) {
         alert('상품 삭제 실패 : ' + error);
+      }
+    });
+  });
+
+  // 상품 구매
+  $('#purchaseBtn').on('click', function () {
+    const productData = {
+      id: productId
+    };
+
+    $.ajax({
+      url: `/api/products/${productId}/purchase`,
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(productData),
+      success: function (response) {
+        alert('구매 성공했습니다!');
+        window.location.href = '/products';
+      },
+      error: function (xhr) {
+        if(xhr.status === 400){
+          alert('구매 실패했습니다 - 재고 소진');
+        } else {
+          alert('구매 실패했습니다 - 에러 : ' + xhr.responseText);
+        }
       }
     });
   });

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 @SpringBootTest
 @Transactional
-@ActiveProfiles("test")
 public class OrderTest {
     @Autowired
     private OrderMapper orderMapper;
@@ -22,8 +21,6 @@ public class OrderTest {
     public void addOrderTest(){
         Order order = new Order();
         order.setProductId(1);
-        order.setQuantity(1);
-        order.setTotal(1000);
         order.setOrderDate(LocalDateTime.now());
 
         System.out.println("order : " + order.toString());

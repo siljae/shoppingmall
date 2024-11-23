@@ -10,9 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class Order {
-    private int id; //주문 번호
-    private int productId;     //상품 번호
-    private int quantity;
-    private double total;
+    private int id;
+    private int productId;
     private LocalDateTime orderDate;
 }
