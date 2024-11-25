@@ -43,23 +43,32 @@
   
 ### 상품 추가
 - **요청**:
-  ```http
+  ```
     POST /api/products
   ```
 - **응답**:
   ```json
     {
-      "name: 현미",
-      "price: 200,
-      'stock: 10
+      "name": "현미",
+      "price": 200,
+      'stock": 10
     }
   ```
   
 ### 상품 수정
 - **요청**:
-  ```http
-    PUT /api/product/1
-    Contrnt-Type
+  ```
+    PUT /api/product/{productId}
+    Contrnt-Type: application/json
+    {
+      "name": "엑스트라 버진 올리브유",
+      "price": 250,
+      "stock": 5
+    }
 - **응답**:
+  ```json
+  {
+    "message": "상품 수정 완료."
+  }
 ### 상품 삭제
 ### 상품 구매
