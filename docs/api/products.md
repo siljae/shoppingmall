@@ -8,39 +8,38 @@
 
 | HTTP 요청 메서드 | URI                     | 기능               |
 |------------------|------------------------|--------------------|
-| `GET`            | `/products`            | 상품 목록 조회     |
-| `GET`            | `/products/{productId}` | 상품 상세 조회     |
-| `POST`           | `/products`            | 상품 추가          |
-| `PUT`            | `/products/{productId}` | 상품 수정          |
-| `DELETE`         | `/products/{productId}` | 상품 삭제          |
-
+| `GET`            | `/api/products`            | 상품 목록 조회     |
+| `GET`            | `/api/products/{productId}` | 상품 상세 조회     |
+| `POST`           | `/api/products`            | 상품 추가          |
+| `PUT`            | `/api/products/{productId}` | 상품 수정          |
+| `DELETE`         | `/api/products/{productId}` | 상품 삭제          |
+| `POST`           | `/api/products/{productId}/purchase| 상품 구매   |
 ## 사용 예시
 
 ### 상품 목록 조회
-
 - **요청**:
   ```http
     GET /products
     응답:
-    json
-    
-    
-    {
-        "products": [
-            {
-                "id": 1,
-                "name": "Product 1",
-                "price": 100,
-                "stock": 20
-            },
-            {
-                "id": 2,
-                "name": "Product 2",
-                "price": 150,
-                "stock": 15
-            }
-        ]
-    }
+      json
+      {
+          "products": [
+              {
+                  "id": 1,
+                  "name": "Product 1",
+                  "price": 100,
+                  "stock": 20
+              },
+              {
+                  "id": 2,
+                  "name": "Product 2",
+                  "price": 150,
+                  "stock": 15
+              }
+          ]
+      }
+ ```
+  
     상품 추가
     요청:
     
@@ -66,4 +65,4 @@
         "price": 200,
         "stock": 10
     }
-  ```
+
