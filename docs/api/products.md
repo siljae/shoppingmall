@@ -43,7 +43,7 @@
   
 ### 상품 추가
 - **요청**:
-  ```
+  ```httpjson
     POST /api/products
     Contrnt-Type: application/json
     json
