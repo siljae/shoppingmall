@@ -1,0 +1,43 @@
+# 개발 일지
+
+## 2024-11-24
+
+### 리펙토링 작업 내용
+- **목적**: Service 함수에서 Controller로의 데이터 반환 방식 개선 및 의존성 감소.
+
+- **무엇을**:
+  - Service 함수의 응답에서 Response 모델을 제거
+
+- **왜**:
+  - Service 함수의 재사용성을 높이기 위해 프론트엔드 응답과의 의존성을 제거
+  - 각 Controller가 필요에 따라 데이터를 변환할 수 있도록 하여, 코드의 유연성을 증가
+
+- **어떻게**:
+  - Response 모델을 Controller에서 구성하여, Service 함수는 Entity 모델을 반환하도록 변경
+  - Controller에서 필요한 데이터 변환 로직을 추가하여, 응답 형식을 Controller가 직접 관리
+
+### 예시 코드 변경
+```
+// 변경 전 (Service에서 Response 모델 반환)
+public ProductListResponse getAllProducts() {
+    List<Product> products = productMapper.getAllProducts();
+    return new ProductListResponse(products.stream()
+            .map(product -> new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock()))
+            .collect(Collectors.toList()));
+}
+
+// 변경 후 (Service에서 Entity 모델 반환)
+public List<Product> getAllProducts() {
+    return productMapper.getAllProducts();
+}
+
+// Controller에서 응답 구성
+@GetMapping("/api/products")
+public ProductListResponse getProducts() {
+    List<Product> products = productService.getAllProducts();
+    List<ProductResponse> productsResponse = products.stream()
+            .map(product -> new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock()))
+            .toList();
+    return new ProductListResponse(productsResponse);
+}
+```
