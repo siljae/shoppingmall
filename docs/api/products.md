@@ -20,49 +20,23 @@
 - **요청**:
   ```http
     GET /products
-    응답:
-      json
-      {
-          "products": [
-              {
-                  "id": 1,
-                  "name": "Product 1",
-                  "price": 100,
-                  "stock": 20
-              },
-              {
-                  "id": 2,
-                  "name": "Product 2",
-                  "price": 150,
-                  "stock": 15
-              }
-          ]
-      }
- ```
-  
-    상품 추가
-    요청:
-    
-    http
-    
-    
-    POST /products
-    Content-Type: application/json
-    
+  ```
+- **응답**:
+  ```json
     {
-        "name": "New Product",
-        "price": 200,
-        "stock": 10
+        "products": [
+            {
+                "id": 1,
+                "name": "Product 1",
+                "price": 100,
+                "stock": 20
+            },
+            {
+                "id": 2,
+                "name": "Product 2",
+                "price": 150,
+                "stock": 15
+            }
+        ]
     }
-    응답:
-    
-    json
-    
-    
-    {
-        "id": 3,
-        "name": "New Product",
-        "price": 200,
-        "stock": 10
-    }
-
+  ```
