@@ -45,7 +45,9 @@
 - **요청**:
   ```
     POST /api/products
-    json
+    Contrnt-Type: application/json
+  ```
+  ```json
       {
         "name": "현미",
         "price": 200,
@@ -58,7 +60,7 @@
       "message": "상품 추가 완료."
     }
   ```
-  
+    
 ### 상품 수정
 - **요청**:
   ```
@@ -77,5 +79,31 @@
   {
     "message": "상품 수정 완료."
   }
+  
 ### 상품 삭제
+- **요청**:
+  ```
+   DELETE /api/products/{productId}
+  ```    
+- **응답**:
+  ```json
+    {
+      "message": "상품 삭제 완료."
+    }
+  
 ### 상품 구매
+- **요청**:
+  ```
+    POST /api/products/{productId}/purchase
+    Contrnt-Type: application/json
+  ```
+  ```json
+    {
+      "productId": 1  
+    }
+  ```
+- **응답**:
+  ```json
+    {
+      "message": "상품 구매 완료."
+    }
