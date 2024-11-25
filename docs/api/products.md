@@ -13,13 +13,13 @@
 | `POST`           | `/api/products`            | 상품 추가          |
 | `PUT`            | `/api/products/{productId}` | 상품 수정          |
 | `DELETE`         | `/api/products/{productId}` | 상품 삭제          |
-| `POST`           | `/api/products/{productId}/purchase| 상품 구매   |
+| `POST`           | `/api/products/{productId}/purchase` | 상품 구매   |
 ## 사용 예시
 
 ### 상품 목록 조회
 - **요청**:
   ```http
-    GET /products
+    GET /api/products
   ```
 - **응답**:
   ```json
@@ -27,16 +27,39 @@
         "products": [
             {
                 "id": 1,
-                "name": "Product 1",
+                "name": "닭가슴살",
                 "price": 100,
                 "stock": 20
             },
             {
                 "id": 2,
-                "name": "Product 2",
+                "name": "목살",
                 "price": 150,
                 "stock": 15
             }
         ]
     }
   ```
+  
+### 상품 추가
+- **요청**:
+  ```http
+    POST /api/products
+  ```
+- **응답**:
+  ```json
+    {
+      "name: 현미",
+      "price: 200,
+      'stock: 10
+    }
+  ```
+  
+### 상품 수정
+- **요청**:
+  ```http
+    PUT /api/product/1
+    Contrnt-Type
+- **응답**:
+### 상품 삭제
+### 상품 구매
