@@ -8,12 +8,12 @@
 
 | HTTP 요청 메서드 | URI                     | 기능               |
 |------------------|------------------------|--------------------|
-| `GET`            | `/api/products`            | 상품 목록 조회     |
+| `GET`            | `/api/products`            | 상품 목록 조회(#상품-목록-조회)     |
 | `GET`            | `/api/products/{productId}` | 상품 상세 조회     |
-| `POST`           | `/api/products`            | 상품 추가          |
-| `PUT`            | `/api/products/{productId}` | 상품 수정          |
-| `DELETE`         | `/api/products/{productId}` | 상품 삭제          |
-| `POST`           | `/api/products/{productId}/purchase` | 상품 구매   |
+| `POST`           | `/api/products`            | 상품 추가(#상품-추가)          |
+| `PUT`            | `/api/products/{productId}` | 상품 수정(#상품-수정)          |
+| `DELETE`         | `/api/products/{productId}` | 상품 삭제(#상품-삭제)          |
+| `POST`           | `/api/products/{productId}/purchase` | 상품 구매(#상품-구매)   |
 ## 사용 예시
 
 ### 상품 목록 조회
@@ -45,6 +45,7 @@
 - **요청**:
   ```javascript
     POST /api/products
+  
     Contrnt-Type: application/json
       {
         "name": "현미",
@@ -63,6 +64,7 @@
 - **요청**:
   ```javascript
     PUT /api/product/{productId}
+  
     Contrnt-Type: application/json
     {
       "name": "엑스트라 버진 올리브유",
@@ -91,6 +93,7 @@
 - **요청**:
   ```javascript
     POST /api/products/{productId}/purchase
+  
     Contrnt-Type: application/json
     {
       "productId": 1  
