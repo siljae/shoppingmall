@@ -18,11 +18,11 @@
 
 ### 상품 목록 조회
 - **요청**:
-  ```http
+  ```javascript
     GET /api/products
   ```
 - **응답**:
-  ```json
+  ```javascript
     {
         "products": [
             {
@@ -53,7 +53,7 @@
       }
   ```
 - **응답**:
-  ```json
+  ```javascript
     {
       "message": "상품 추가 완료."
     }
@@ -61,11 +61,9 @@
     
 ### 상품 수정
 - **요청**:
-  ```
+  ```javascript
     PUT /api/product/{productId}
     Contrnt-Type: application/json
-  ```
-  ```json
     {
       "name": "엑스트라 버진 올리브유",
       "price": 250,
@@ -73,35 +71,33 @@
     }
   ```
 - **응답**:
-  ```json
+  ```javascript
   {
     "message": "상품 수정 완료."
   }
   
 ### 상품 삭제
 - **요청**:
-  ```
+  ```javascript
    DELETE /api/products/{productId}
   ```    
 - **응답**:
-  ```json
+  ```javascript
     {
       "message": "상품 삭제 완료."
     }
   
 ### 상품 구매
 - **요청**:
-  ```
+  ```javascript
     POST /api/products/{productId}/purchase
     Contrnt-Type: application/json
-  ```
-  ```json
     {
       "productId": 1  
     }
   ```
 - **응답**:
-  ```json
+  ```javascript
     {
       "message": "상품 구매 완료."
     }
