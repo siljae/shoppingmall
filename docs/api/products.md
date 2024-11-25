@@ -18,7 +18,7 @@
 
 ### 상품 목록 조회
 - **요청**:
-  ```
+  ```http
     GET /api/products
   ```
 - **응답**:
@@ -43,10 +43,9 @@
   
 ### 상품 추가
 - **요청**:
-  ```httpjson
+  ```javascript
     POST /api/products
     Contrnt-Type: application/json
-    json
       {
         "name": "현미",
         "price": 200,
