@@ -46,12 +46,11 @@
   ```
     POST /api/products
     Contrnt-Type: application/json
-  ```
-  ```json
+    json
       {
         "name": "현미",
         "price": 200,
-        'stock": 10
+        "stock": 10
       }
   ```
 - **응답**:
