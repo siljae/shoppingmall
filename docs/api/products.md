@@ -45,13 +45,17 @@
 - **요청**:
   ```
     POST /api/products
+    json
+      {
+        "name": "현미",
+        "price": 200,
+        'stock": 10
+      }
   ```
 - **응답**:
   ```json
     {
-      "name": "현미",
-      "price": 200,
-      'stock": 10
+      "message": "상품 추가 완료."
     }
   ```
   
@@ -60,11 +64,14 @@
   ```
     PUT /api/product/{productId}
     Contrnt-Type: application/json
+  ```
+  ```json
     {
       "name": "엑스트라 버진 올리브유",
       "price": 250,
       "stock": 5
     }
+  ```
 - **응답**:
   ```json
   {
