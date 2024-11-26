@@ -64,7 +64,7 @@
   
     Contrnt-Type: application/json
     {
-      "id": " 2,
+      "id": 2,
       "name": "엑스트라 버진 올리브유",
       "price": 250,
       "stock": 5
