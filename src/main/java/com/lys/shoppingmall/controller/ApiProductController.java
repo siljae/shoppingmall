@@ -3,8 +3,8 @@ package com.lys.shoppingmall.controller;
 import com.lys.shoppingmall.model.order.Order;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.OrderRequest;
-import com.lys.shoppingmall.model.response.ProductListResponse;
 import com.lys.shoppingmall.model.request.ProductRequest;
+import com.lys.shoppingmall.model.response.ProductListResponse;
 import com.lys.shoppingmall.model.response.ProductResponse;
 import com.lys.shoppingmall.service.OrderService;
 import com.lys.shoppingmall.service.ProductService;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class ApiProductController {
