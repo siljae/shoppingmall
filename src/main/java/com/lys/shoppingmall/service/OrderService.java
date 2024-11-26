@@ -4,8 +4,8 @@ import com.lys.shoppingmall.exception.OrderNotFoundException;
 import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.model.order.Order;
 import com.lys.shoppingmall.model.request.OrderRequest;
-import com.lys.shoppingmall.model.response.OrderResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +20,7 @@ public class OrderService {
         this.productService = productService;
     }
 
+    @Transactional
     public Order addOrder(OrderRequest request){
         Order order = new Order();
         order.setProductId(request.getProductId());
@@ -31,7 +32,6 @@ public class OrderService {
             throw new OrderNotFoundException("Order with ID " + 0 + " not found.");
         }
 
-        // 상품 서비스로 재고차감 요청하기
         productService.reduceStock(order.getProductId(), 1);
 
         return order;

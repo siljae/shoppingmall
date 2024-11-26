@@ -81,7 +81,6 @@
 
 <script th:inline="javascript">
   const productId = /*[[${product.id}]]*/0;
-
   // 상품 수정 모달
   $('#updateBtn').on('click', function () {
     $('#confirmUpdateModal').modal('show');
@@ -133,7 +132,7 @@
   // 상품 구매
   $('#purchaseBtn').on('click', function () {
     const productData = {
-      id: productId
+      productId: productId
     };
 
     $.ajax({
@@ -149,7 +148,8 @@
         if(xhr.status === 400){
           alert('구매 실패했습니다 - 재고 소진');
         } else {
-          alert('구매 실패했습니다 - 에러 : ' + xhr.responseText);
+          alert('구매 실패했습니다 - 에러가 발생했습니다. 관리자에게 문의하세요 ');
+          console.error('구매 실패 에러 : ', xhr.responseText);
         }
       }
     });

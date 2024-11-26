@@ -22,6 +22,7 @@ public class ProductService {
         return productMapper.getAllProducts();
     }
 
+    @Transactional
     public Product getById(int id){
         Product product = productMapper.getProductById(id);
 
@@ -31,6 +32,7 @@ public class ProductService {
         return product;
     }
 
+    @Transactional
     public Product addProduct(ProductRequest request){
         Product product = new Product();
         product.setName(request.getName());
