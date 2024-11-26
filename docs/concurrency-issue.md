@@ -8,6 +8,7 @@
           - Agent: 1
           - Vuser per agent: 50
           - Run Count: 1000
+       
 ![nGrinder-PurchaseTest Configuration2](https://github.com/user-attachments/assets/da025ccf-27f9-4c5a-8d96-0ddeba3b4887)
 
 ### 2. 테스트 시나리오
@@ -16,7 +17,9 @@
 ### 3. 테스트 결과
   - 구매 기록 : 15,668건의 주문이 기록
   - 재고 상태: 설정한 재고는 5,000개였지만, 426개의 재고가 남음
+
 ![nGrinder-PurchaseTest Report2](https://github.com/user-attachments/assets/cb949315-5ad4-4f6d-b969-a257e3fc87ea)
+
 ```mysql
   SELECT COUNT(*) FROM orders WHERE order_date > '2024-11-26 22:42:10';
   SELECT stock FROM products WHERE id = 5;
