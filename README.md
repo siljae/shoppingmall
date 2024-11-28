@@ -11,7 +11,9 @@
 - [**상품 구매**](docs/api/products.md#상품-구매): 상품을 구매하는 기능을 제공합니다.
 
 ## 아키텍처
+![basic](https://github.com/user-attachments/assets/5f2813d3-7e16-46f4-b0e9-e58a86a284e3)
 
 ## ERD
+
 
 ## 프로젝트 구조
