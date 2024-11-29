@@ -12,8 +12,8 @@
 ## 프로젝트 구조
 /src
 ```bash
-|---test
-|  |--- test
+|-test
+|  |- test
 ```
 
 ## 기능
