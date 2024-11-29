@@ -43,7 +43,7 @@
   ```javascript
     POST /api/products
   
-    Contrnt-Type: application/json
+    Content-Type: application/json
       {
         "name": "현미",
         "price": 200,
@@ -62,7 +62,7 @@
   ```javascript
     PUT /api/product/{productId}
   
-    Contrnt-Type: application/json
+    Content-Type: application/json
     {
       "id": 2,
       "name": "엑스트라 버진 올리브유",
@@ -92,7 +92,7 @@
   ```javascript
     POST /api/products/{productId}/purchase
   
-    Contrnt-Type: application/json
+    ent-Type: application/json
     {
       "productId": 1  
     }
