@@ -5,7 +5,7 @@ services:
     image: mariadb:11.4
     restart: always
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1   # 비밀번호 없이 DB 접근 가능
       MYSQL_DATABASE: shoppingmall
       MYSQL_USER: shoppingmall_api
       MYSQL_PASSWORD: a3Bq7kLp
@@ -14,5 +14,31 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
+  ngrinder-controller:
+    image: ngrinder/controller
+    restart: always
+    ports:
+      - "12000-12009:12000-12009"    # nGrinder 포트 매핑
+      - "16001:16001"                # nGrinder 웹 UI 포트
+      - "7070:80"                    # nGrinder 기본 포트
+    environment:
+      NGRINDER_HOME: /opt/ngrinder-controller
+      JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
+    volumes:
+      - /tmp/ngrinder-controller:/opt/ngrinder-controller  # 바인드 마운트
+
+  ngrinder-agent:
+    image: ngrinder/agent
+    restart: always
+    depends_on:
+      - ngrinder-controller  # 에이전트가 컨트롤러에 의존하도록 설정
+    environment:
+      JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
+      NGRINDER_AGENT_BASE: /opt/ngrinder-agent
+      NGRINDER_AGENT_HOME: /opt/ngrinder-agent/.ngrinder-agent
+    volumes:
+      - ngrinder_agent_data:/opt/ngrinder-agent  # 에이전트 데이터 저장을 위한 볼륨
+
 volumes:
   db_data:
+  ngrinder_agent_data:  # nGrinder 에이전트 데이터 저장을 위한 볼륨
