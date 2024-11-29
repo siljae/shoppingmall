@@ -25,7 +25,7 @@
 │   │               ├── service         // 비즈니스 로직을 처리하는 서비스 클래스
 │   │               └── ShoppingmallApplication.java  // 애플리케이션의 진입점
 │   ├── resources
-│   │   ├── static
+│   │   ├── static                       // 정적 파일 (CSS, JS 등)
 │   │   ├── templates                    // 템플릿 파일 (HTML 등)
 │   │   └── application.yml              // 애플리케이션 설정 파일
 ├── test
@@ -36,7 +36,7 @@
 │   │               ├── controller      // 컨트롤러 테스트
 │   │               ├── database        // 데이터베이스 관련 테스트
 │   │               ├── service         // 서비스 테스트
-│   │               └── ShoppingmallApplicationTest.java  // 애플리케이션테스트위 진입점
+│   │               └── ShoppingmallApplicationTest.java  // 애플리케이션 진입점 테스트
 ```
 
 ## 기능
