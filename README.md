@@ -51,3 +51,7 @@
 
 ## Swagger UI 스크린샷
 ![Swagger UI](https://github.com/user-attachments/assets/5305589f-d37b-4f5c-9d22-0323d36acc68)
+
+## 동시성 테스트
+이 프로젝트는 동시성 테스트를 통해 여러 사용자가 동시에 상품을 구매할 때 시스템의 성능과 안정성을 검증합니다.
+현재 구매 기능에 대한 동시성 테스트를 수행하였으며, 자세한 내용은 [동시성 테스트 문서](docs/concurrency-issue.md)에서 확인할 수 있습니다.
