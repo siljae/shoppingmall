@@ -10,10 +10,11 @@
 ![shoppingmal ERD](https://github.com/user-attachments/assets/7be8a57e-3490-4250-910b-4a36e88d8b16)
 
 ## 프로젝트 구조
-/srcÃÀ³
+/src
 ```bash
 +--test
   +-- test
+ÃÀ³
 ```
 
 ## 기능
