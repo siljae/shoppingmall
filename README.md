@@ -20,3 +20,6 @@
 
 ## API 문서화
 이 프로젝트에서는 Swagger를 사용하여 API를 문서화했습니다. Swagger UI를 통해 API를 시각적으로 확인하고 테스트할 수 있습니다. 각 API 엔드포인트에 대한 자세한 설명은 [docs/api/products.md](docs/api/products.md)에서 확인할 수 있습니다.
+
+## Swagger UI 스크린샷
+![Swagger UI](https://github.com/user-attachments/assets/5305589f-d37b-4f5c-9d22-0323d36acc68)
