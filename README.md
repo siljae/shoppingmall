@@ -12,10 +12,31 @@
 ## 프로젝트 구조
 /src
 ```bash
-├
-└
-│
-─
+├── main
+│   ├── java
+│   │   └── com
+│   │       └── lys
+│   │           └── shoppingmall
+│   │               ├── config          // 애플리케이션 설정 관련 클래스
+│   │               ├── controller      // API 요청을 처리하는 컨트롤러
+│   │               ├── exception       // 사용자 정의 예외 클래스
+│   │               ├── mapper          // 데이터베이스 매핑 관련 클래스
+│   │               ├── model           // 데이터 모델 클래스 (엔티티)
+│   │               ├── service         // 비즈니스 로직을 처리하는 서비스 클래스
+│   │               └── ShoppingmallApplication.java  // 애플리케이션의 진입점
+│   ├── resources
+│   │   ├── static
+│   │   ├── templates                    // 템플릿 파일 (HTML 등)
+│   │   └── application.yml              // 애플리케이션 설정 파일
+├── test
+|   ├── java
+│   │   └── com
+│   │       └── lys
+│   │           └── shoppingmall
+│   │               ├── controller      // 컨트롤러 테스트
+│   │               ├── database        // 데이터베이스 관련 테스트
+│   │               ├── service         // 서비스 테스트
+│   │               └── ShoppingmallApplicationTest.java  // 애플리케이션테스트위 진입점
 ```
 
 ## 기능
