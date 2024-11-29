@@ -29,7 +29,7 @@
 │   │   ├── templates                    // 템플릿 파일 (HTML 등)
 │   │   └── application.yml              // 애플리케이션 설정 파일
 ├── test
-|   ├── java
+│   ├── java
 │   │   └── com
 │   │       └── lys
 │   │           └── shoppingmall
