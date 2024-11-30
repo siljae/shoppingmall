@@ -27,7 +27,7 @@
   SELECT stock FROM products WHERE id = 5;
 ```
 ![nGrinder-PurchaseTest-mysql-orders-count](./images/nGrinder-PurchaseTest-mysql-orders-count.png)
-![nGrinder-PurchaseTest-mysql-products-stock](./nGrinder-PurchaseTest-images/mysql-products-stock.png)
+![nGrinder-PurchaseTest-mysql-products-stock](./images/nGrinder-PurchaseTest-mysql-products-stock.png)
 
 ### 4. 문제 분석
   - **동시성 문제**: 여러 사용자가 동시에 주문을 시도하면서, 재고가 부족한 상태에서도 주문이 처리되는 문제가 발생하였습니다.
