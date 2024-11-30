@@ -27,9 +27,13 @@ note right of ProductService : 상품 조회 트랜잭션 시작
 
     opt 상품 조회 실패
     ProductService --> Controller : ProductNotFoundException
+    Controller --> User : 제품을 찾을 수 없습니다.
+    note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
     opt 재고 부족
     ProductService --> Controller : OutOfStockException
+    Controller --> User : 재고가 부족합니다.
+    note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
 
     ProductService -> ProductService : product.setStock(stock - request.quantity)
@@ -41,6 +45,8 @@ note right of ProductService : 상품 조회 트랜잭션 시작
         deactivate DB
     ProductMapper --> ProductService : void
     deactivate ProductMapper
+ProductService --> Controller : void
+deactivate ProductService
 note right of ProductService : 상품 조회 트랜잭션 종료
 
 Controller -> OrderService : addOrder(productId)
@@ -71,12 +77,6 @@ note right of OrderService : 주문 추가 트랜잭션 시작
             deactivate DB
         ProductMapper --> ProductService : Product
         deactivate ProductMapper
-        opt 상품 조회 실패
-        ProductService --> Controller : ProductNotFoundException
-        end
-        opt 복구 수량 부족
-        ProductService --> Controller : IllegalArgumentException
-        end
         ProductService -> ProductService : product.setStock(stock + request.quantity)
             ProductService -> ProductMapper : updateProductStock(product)
             activate ProductMapper
@@ -86,7 +86,10 @@ note right of OrderService : 주문 추가 트랜잭션 시작
                 deactivate DB
             ProductMapper --> ProductService : void
             deactivate ProductMapper
-    note right of ProductService : 재고 복원 트랜잭션 종료
+            note right of ProductService : 재고 복원 트랜잭션 종료
+        ProductService --> Controller : void
+        deactivate ProductService
+    Controller --> User : 주문 추가에 실패했습니다.
     end
 OrderService --> Controller : void
 deactivate OrderService

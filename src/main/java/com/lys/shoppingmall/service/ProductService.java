@@ -2,7 +2,6 @@ package com.lys.shoppingmall.service;
 
 import com.lys.shoppingmall.exception.OutOfStockException;
 import com.lys.shoppingmall.exception.ProductNotFoundException;
-import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.mapper.ProductMapper;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.OrderRequest;
@@ -88,10 +87,7 @@ public class ProductService {
 
    @Transactional(propagation = Propagation.REQUIRES_NEW)
    public void restoreStock(int productId, int quantity){
-        Product product = productMapper.getProductById(productId);
-
-        if(product == null) throw new ProductNotFoundException(productId);
-        if(quantity < 0) throw new IllegalArgumentException("복구할 수량은 0보다 커야 합니다");
+       Product product = productMapper.getProductById(productId);
 
        product.setStock(product.getStock() + quantity);
 

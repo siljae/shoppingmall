@@ -62,10 +62,10 @@ public class ApiProductController {
             productService.reduceStock(request);
             orderService.addOrder(request.getProductId());
             return ResponseEntity.ok("구매가 완료되었습니다.");
-        } catch (OutOfStockException e){
-            return ResponseEntity.badRequest().body("재고가 부족합니다.");
         } catch (ProductNotFoundException e){
             return ResponseEntity.badRequest().body("제품을 찾을 수 없습니다.");
+        } catch (OutOfStockException e){
+            return ResponseEntity.badRequest().body("재고가 부족합니다.");
         } catch (OrderNotFoundException e){
             productService.restoreStock(request.getProductId(), request.getQuantity());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 추가에 실패했습니다.");
