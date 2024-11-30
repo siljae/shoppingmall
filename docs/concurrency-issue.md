@@ -18,7 +18,7 @@
           - Vuser per agent: 50
           - Run Count: 1000
        
-![nGrinder-PurchaseTest](./images/nGrinder-PurchaseTest.JPG)
+![nGrinder-PurchaseTest](./images/nGrinder-PurchaseTest.png)
 
 ### 3. 테스트 결과
   - 구매 기록 : 15,668건의 주문이 기록되었습니다. (구매 성공 비율: 약 1,567%)
@@ -29,11 +29,11 @@
 ![nGrinder-PurchaseTest-Report](./images/nGrinder-PurchaseTest-Report.png)
 
 ```mysql
-  SELECT COUNT(*) FROM orders WHERE order_date > '2024-11-26 22:42:10';
-  SELECT stock FROM products WHERE id = 5;
+SELECT 
+    (SELECT COUNT(*) FROM orders WHERE order_date > '2024-12-01 02:07:00') AS order_count,
+    (SELECT stock FROM products WHERE id = 1) AS product_stock;
 ```
-![nGrinder-PurchaseTest-Mysql-Orders-Count](./images/nGrinder-PurchaseTest-Mysql-Orders-Count.png)
-![nGrinder-PurchaseTest-Mysql-Products-Stock](./images/nGrinder-PurchaseTest-Mysql-Products-Stock.png)
+![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock](./images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock.png)
 
 ### 4. 문제 분석
   - **동시성 문제**: 여러 사용자가 동시에 주문을 시도하면서, 재고가 부족한 상태에서도 주문이 처리되는 문제가 발생하였습니다.
