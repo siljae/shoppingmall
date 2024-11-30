@@ -3,18 +3,18 @@ package com.lys.shoppingmall.service;
 import com.lys.shoppingmall.exception.OrderNotFoundException;
 import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.model.order.Order;
-import com.lys.shoppingmall.model.request.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
 
 public class OrderServiceTest {
     @Mock
@@ -32,10 +32,10 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void addOrder_failed(){
+    @DisplayName("구매 기록 실패")
+    public void addOrder_failed() {
         // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
+        int productId = 1;
 
         doAnswer(invocation -> {
             Order arg = invocation.getArgument(0);
@@ -43,23 +43,20 @@ public class OrderServiceTest {
             return null;
         }).when(orderMapper).insertOrder(any(Order.class));
 
-        // When & Then
+        // When
         OrderNotFoundException exception = assertThrows(OrderNotFoundException.class, () -> {
-            orderService.addOrder(request);
+            orderService.addOrder(productId);
         });
+
+        // Then
         assertEquals("Order with ID 0 not found.", exception.getMessage());
     }
-    
-    @Test
-    public void addOrder_succeed(){
-        // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
 
-        Order order = new Order();
-        order.setId(1);
-        order.setProductId(request.getProductId());
-        order.setOrderDate(LocalDateTime.now());
+    @Test
+    @DisplayName("구매 기록 성공")
+    public void addOrder_succeed() {
+        // Given
+        int productId = 1;
 
         doAnswer(invocation -> {
             Order arg = invocation.getArgument(0);
@@ -68,12 +65,9 @@ public class OrderServiceTest {
         }).when(orderMapper).insertOrder(any(Order.class));
 
         // When
-        Order addedOrder = orderService.addOrder(request);
+        orderService.addOrder(productId);
 
         // Then
-        assertNotNull(addedOrder);
-        assertEquals(1, addedOrder.getId());
-        assertEquals(1, addedOrder.getProductId());
-        verify(productService, times(1)).reduceStock(1, 1);
+        verify(orderMapper).insertOrder(any(Order.class));
     }
 }

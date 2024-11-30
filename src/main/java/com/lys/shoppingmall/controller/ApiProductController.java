@@ -1,5 +1,8 @@
 package com.lys.shoppingmall.controller;
 
+import com.lys.shoppingmall.exception.OrderNotFoundException;
+import com.lys.shoppingmall.exception.OutOfStockException;
+import com.lys.shoppingmall.exception.ProductNotFoundException;
 import com.lys.shoppingmall.model.order.Order;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.OrderRequest;
@@ -55,10 +58,17 @@ public class ApiProductController {
 
     @PostMapping("/api/products/{productId}/purchase")
     public ResponseEntity<String> purchaseProduct(@RequestBody OrderRequest request){
-        Order order = orderService.addOrder(request);
-        if(order.getId() == 0){
+        try {
+            productService.reduceStock(request);
+            orderService.addOrder(request.getProductId());
+            return ResponseEntity.ok("구매가 완료되었습니다.");
+        } catch (OutOfStockException e){
             return ResponseEntity.badRequest().body("재고가 부족합니다.");
+        } catch (ProductNotFoundException e){
+            return ResponseEntity.badRequest().body("제품을 찾을 수 없습니다.");
+        } catch (OrderNotFoundException e){
+            productService.restoreStock(request.getProductId(), request.getQuantity());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("주문 추가에 실패했습니다.");
         }
-        return ResponseEntity.ok("구매가 완료되었습니다.");
     }
 }

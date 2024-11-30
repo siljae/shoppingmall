@@ -1,45 +1,98 @@
 @startuml
-actor User
-participant "상품 상세 페이지" as ProductPage
+title 구매 API 시퀀스 다이어그램
+
+actor 사용자 as User
 participant "ApiProductController" as Controller
-participant "OrderService" as OrderService
-participant "OrderMapper" as OrderMapper
 participant "ProductService" as ProductService
 participant "ProductMapper" as ProductMapper
+participant "OrderService" as OrderService
+participant "OrderMapper" as OrderMapper
 database "Database" as DB
 
-User -> ProductPage : 구매 버튼 클릭
-ProductPage -> Controller : POST /api/products/{productId}/purchase
-Controller -> OrderService : addOrder(request)
-OrderService -> OrderMapper : insertOrder(order)
-OrderMapper -> DB : INSERT INTO orders
-DB --> OrderMapper : 주문 ID 반환
-OrderMapper --> OrderService : 주문 객체 반환
+User -> Controller : POST /api/products/{productId}/purchase(request)
+activate Controller
 
-alt 주문 ID가 0
-    OrderService -> Controller : 예외 발생 (OrderNotFoundException)
-else 정상 흐름
-    OrderService -> ProductService : reduceStock(productId, 1)
-    ProductService -> ProductMapper : getProductById(id)
-    ProductMapper -> DB : SELECT * FROM products WHERE id = #{id}
-    DB --> ProductMapper : 상품 정보 반환
-    ProductMapper --> ProductService : 상품 객체 반환
-end
+Controller -> ProductService : reduceStock(request)
+activate ProductService
 
-alt 상품 미존재
-    ProductService -> OrderService : 예외 발생 (ProductNotFoundException)
-else 정상 흐름
-    ProductService -> ProductService : 상품 확인
-end
+note right of ProductService : 상품 조회 트랜잭션 시작
+    ProductService -> ProductMapper : getProductById(productId)
+    activate ProductMapper
+        ProductMapper -> DB : getProductById(id)
+        activate DB
+        DB --> ProductMapper : Product
+        deactivate DB
+    ProductMapper --> ProductService : Product
+    deactivate ProductMapper
 
-alt 재고 부족
-    ProductService -> OrderService : 예외 발생 (OutOfStockException)
-else 정상 흐름
+    opt 상품 조회 실패
+    ProductService --> Controller : ProductNotFoundException
+    end
+    opt 재고 부족
+    ProductService --> Controller : OutOfStockException
+    end
+
+    ProductService -> ProductService : product.setStock(stock - request.quantity)
     ProductService -> ProductMapper : updateProductStock(product)
-    ProductMapper -> DB : UPDATE products SET stock = #{stock} WHERE id = #{id}
-    DB --> ProductMapper : 업데이트 완료
-end
+    activate ProductMapper
+        ProductMapper -> DB : updateProduct(product)
+        activate DB
+        DB --> ProductMapper : void
+        deactivate DB
+    ProductMapper --> ProductService : void
+    deactivate ProductMapper
+note right of ProductService : 상품 조회 트랜잭션 종료
 
-OrderService --> Controller : 주문 객체 반환
-Controller --> User : 구매 완료 메시지
+Controller -> OrderService : addOrder(productId)
+activate OrderService
+
+note right of OrderService : 주문 추가 트랜잭션 시작
+    OrderService -> OrderMapper : insertOrder(order)
+    activate OrderMapper
+
+        OrderMapper -> DB : insertOrder(order)
+        activate DB
+        DB --> OrderMapper : void
+        deactivate DB
+    OrderMapper --> OrderService : void
+    deactivate OrderMapper
+
+    opt 주문 추가 실패
+    OrderService --> Controller : OrderNotFoundException
+    note right of OrderService : 예외 발생으로 인한 트랜잭션 종료
+    Controller -> ProductService : restoreStock(ProductId, quantity)
+    note right of ProductService : 재고 복원 트랜잭션 시작
+    activate ProductService
+        ProductService -> ProductMapper : getProductById(productId)
+        activate ProductMapper
+            ProductMapper -> DB : getProductById(id)
+            activate DB
+            DB --> ProductMapper : Product
+            deactivate DB
+        ProductMapper --> ProductService : Product
+        deactivate ProductMapper
+        opt 상품 조회 실패
+        ProductService --> Controller : ProductNotFoundException
+        end
+        opt 복구 수량 부족
+        ProductService --> Controller : IllegalArgumentException
+        end
+        ProductService -> ProductService : product.setStock(stock + request.quantity)
+            ProductService -> ProductMapper : updateProductStock(product)
+            activate ProductMapper
+                ProductMapper -> DB : updateProductStock(product)
+                activate DB
+                DB --> ProductMapper : void
+                deactivate DB
+            ProductMapper --> ProductService : void
+            deactivate ProductMapper
+    note right of ProductService : 재고 복원 트랜잭션 종료
+    end
+OrderService --> Controller : void
+deactivate OrderService
+note right of OrderService : 주문 추가 트랜잭션 종료
+
+Controller --> User : 구매가 완료되었습니다.
+deactivate Controller
+
 @enduml
