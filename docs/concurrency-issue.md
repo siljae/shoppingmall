@@ -26,8 +26,8 @@
   SELECT COUNT(*) FROM orders WHERE order_date > '2024-11-26 22:42:10';
   SELECT stock FROM products WHERE id = 5;
 ```
-![mysql-orders-count](./images/mysql-orders-count)
-![mysql-products-stock](./images/mysql-products-stock)
+![mysql-orders-count](./images/mysql-orders-count.png)
+![mysql-products-stock](./images/mysql-products-stock.png)
 
 ### 4. 문제 분석
   - **동시성 문제**: 여러 사용자가 동시에 주문을 시도하면서, 재고가 부족한 상태에서도 주문이 처리되는 문제가 발생하였습니다.
