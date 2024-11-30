@@ -7,7 +7,7 @@
 ![basic](./docs/images/Architecture.PNG)
 
 ## ERD
-![shoppingmal ERD](https://github.com/user-attachments/assets/7be8a57e-3490-4250-910b-4a36e88d8b16)
+![shoppingmal ERD](./docs/images/Shoppingmall-ERD.PNG)
 
 ## 프로젝트 구조
 /src
@@ -50,7 +50,7 @@
 이 프로젝트에서는 Swagger를 사용하여 API를 문서화했습니다. Swagger UI를 통해 API를 시각적으로 확인하고 테스트할 수 있습니다. 각 API 엔드포인트에 대한 자세한 설명은 [docs/api/products.md](docs/api/products.md)에서 확인할 수 있습니다.
 
 ## Swagger UI 스크린샷
-![Swagger UI](https://github.com/user-attachments/assets/5305589f-d37b-4f5c-9d22-0323d36acc68)
+![Swagger UI](./docs/images/Swagger-UI.PNG)
 
 ## 동시성 테스트
 이 프로젝트는 동시성 테스트를 통해 여러 사용자가 동시에 상품을 구매할 때 시스템의 성능과 안정성을 검증합니다.
