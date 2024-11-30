@@ -7,7 +7,7 @@
 ![basic](./docs/images/Architecture.PNG)
 
 ## ERD
-![shoppingmal ERD](./docs/images/Shoppingmall-ERD.PNG)
+![shoppingmal ERD](./docs/images/Shoppingmall-ERD.png)
 
 ## 프로젝트 구조
 /src
