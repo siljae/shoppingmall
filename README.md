@@ -13,8 +13,7 @@
 - [**상품 수정**](docs/api/products.md#상품-수정): 기존 상품의 정보를 수정할 수 있습니다.
 - [**상품 구매**](docs/api/products.md#상품-구매): 상품을 구매하는 기능을 제공합니다.
 - 각 API 엔드포인트에 대한 자세한 설명은 [docs/api/products.md](docs/api/products.md)에서 확인할 수 있습니다.
-- **ERD**:
-![shoppingmal ERD](./docs/images/Shoppingmall-ERD.png)
+- **ERD**:<br>![shoppingmal ERD](./docs/images/Shoppingmall-ERD.png)
 
 ## Swagger
 ![Swagger UI](./docs/images/Swagger-UI.PNG)
