@@ -1,0 +1,45 @@
+@startuml
+actor User
+participant "상품 상세 페이지" as ProductPage
+participant "ApiProductController" as Controller
+participant "OrderService" as OrderService
+participant "OrderMapper" as OrderMapper
+participant "ProductService" as ProductService
+participant "ProductMapper" as ProductMapper
+database "Database" as DB
+
+User -> ProductPage : 구매 버튼 클릭
+ProductPage -> Controller : POST /api/products/{productId}/purchase
+Controller -> OrderService : addOrder(request)
+OrderService -> OrderMapper : insertOrder(order)
+OrderMapper -> DB : INSERT INTO orders
+DB --> OrderMapper : 주문 ID 반환
+OrderMapper --> OrderService : 주문 객체 반환
+
+alt 주문 ID가 0
+    OrderService -> Controller : 예외 발생 (OrderNotFoundException)
+else 정상 흐름
+    OrderService -> ProductService : reduceStock(productId, 1)
+    ProductService -> ProductMapper : getProductById(id)
+    ProductMapper -> DB : SELECT * FROM products WHERE id = #{id}
+    DB --> ProductMapper : 상품 정보 반환
+    ProductMapper --> ProductService : 상품 객체 반환
+end
+
+alt 상품 미존재
+    ProductService -> OrderService : 예외 발생 (ProductNotFoundException)
+else 정상 흐름
+    ProductService -> ProductService : 상품 확인
+end
+
+alt 재고 부족
+    ProductService -> OrderService : 예외 발생 (OutOfStockException)
+else 정상 흐름
+    ProductService -> ProductMapper : updateProductStock(product)
+    ProductMapper -> DB : UPDATE products SET stock = #{stock} WHERE id = #{id}
+    DB --> ProductMapper : 업데이트 완료
+end
+
+OrderService --> Controller : 주문 객체 반환
+Controller --> User : 구매 완료 메시지
+@enduml

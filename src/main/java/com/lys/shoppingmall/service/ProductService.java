@@ -58,7 +58,7 @@ public class ProductService {
         if(request.getPrice() > 0)
             product.setPrice(request.getPrice());
 
-        if(request.getStock() > 0)
+        if(request.getStock() >= 0)
             product.setStock(request.getStock());
 
         productMapper.updateProduct(product);
