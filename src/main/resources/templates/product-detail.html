@@ -132,7 +132,8 @@
   // 상품 구매
   $('#purchaseBtn').on('click', function () {
     const productData = {
-      productId: productId
+      productId: productId,
+      quantity: 1
     };
 
     $.ajax({

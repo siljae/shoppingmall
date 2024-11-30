@@ -10,7 +10,7 @@ public class OrderNotFoundException extends NotFoundException{
     private final String errorCode = "000002";
     private final String errorMessage;
 
-    public OrderNotFoundException(String orderId) {
+    public OrderNotFoundException(int orderId) {
         super("Order with ID " + orderId + " not found.");
         errorMessage = "order not found (" + orderId + ")";
     }

@@ -2,10 +2,13 @@ package com.lys.shoppingmall.service;
 
 import com.lys.shoppingmall.exception.OutOfStockException;
 import com.lys.shoppingmall.exception.ProductNotFoundException;
+import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.mapper.ProductMapper;
 import com.lys.shoppingmall.model.product.Product;
+import com.lys.shoppingmall.model.request.OrderRequest;
 import com.lys.shoppingmall.model.request.ProductRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -72,17 +75,26 @@ public class ProductService {
     }
 
     @Transactional
-    public void reduceStock(int id, int quantity){
-        Product product = productMapper.getProductById(id);
-        if(product == null){
-            throw new ProductNotFoundException(id);
-        }
+    public void reduceStock(OrderRequest request){
+        Product product = productMapper.getProductById(request.getProductId());
 
-        if(product.getStock() < quantity){
-            throw new OutOfStockException(product.getId());
-        }
+        if(product == null) throw new ProductNotFoundException(request.getProductId());
+        if(product.getStock() < request.getQuantity()) throw new OutOfStockException(product.getId());
 
-        product.setStock(product.getStock() - quantity);
+        product.setStock(product.getStock() - request.getQuantity());
+
         productMapper.updateProductStock(product);
+    }
+
+   @Transactional(propagation = Propagation.REQUIRES_NEW)
+   public void restoreStock(int productId, int quantity){
+        Product product = productMapper.getProductById(productId);
+
+        if(product == null) throw new ProductNotFoundException(productId);
+        if(quantity < 0) throw new IllegalArgumentException("복구할 수량은 0보다 커야 합니다");
+
+       product.setStock(product.getStock() + quantity);
+
+       productMapper.updateProductStock(product);
     }
 }
