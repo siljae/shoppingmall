@@ -9,7 +9,7 @@
           - Vuser per agent: 50
           - Run Count: 1000
        
-![nGrinder-PurchaseTest](./images/nGrinder-purchaseTest.JPG)
+![nGrinder-PurchaseTest](./images/nGrinder-PurchaseTest.JPG)
 
 ### 2. 테스트 시나리오
   - 여러 사용자가 동시에 상품을 구매하는 상황을 시뮬레이션하였습니다.
@@ -26,8 +26,8 @@
   SELECT COUNT(*) FROM orders WHERE order_date > '2024-11-26 22:42:10';
   SELECT stock FROM products WHERE id = 5;
 ```
-![nGrinder-PurchaseTest-mysql-orders-count](./images/nGrinder-PurchaseTest-mysql-orders-count.png)
-![nGrinder-PurchaseTest-mysql-products-stock](./images/nGrinder-PurchaseTest-mysql-products-stock.png)
+![nGrinder-PurchaseTest-Mysql-Orders-Count](./images/nGrinder-PurchaseTest-Mysql-Orders-Count.png)
+![nGrinder-PurchaseTest-Mysql-Products-Stock](./images/nGrinder-PurchaseTest-Mysql-Products-Stock.png)
 
 ### 4. 문제 분석
   - **동시성 문제**: 여러 사용자가 동시에 주문을 시도하면서, 재고가 부족한 상태에서도 주문이 처리되는 문제가 발생하였습니다.
