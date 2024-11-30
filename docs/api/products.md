@@ -92,7 +92,7 @@
   ```javascript
     POST /api/products/{productId}/purchase
   
-    ent-Type: application/json
+    content-Type: application/json
     {
       "productId": 1  
     }
