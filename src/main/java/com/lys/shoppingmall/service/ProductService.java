@@ -75,16 +75,14 @@ public class ProductService {
         productMapper.deleteProduct(id);
     }
 
-    @Transactional
-    public void reduceStock(OrderRequest request){
-        Product product = productMapper.getProductById(request.getProductId());
+    public void reduceStock(int id, int quantity){
+        Product product = productMapper.getProductById(id);
 
-        if(product == null) throw new ProductNotFoundException(request.getProductId());
-        if(product.getStock() < request.getQuantity()) throw new OutOfStockException(product.getId());
+        if(product == null) throw new ProductNotFoundException(id);
+        if(product.getStock() < quantity) throw new OutOfStockException(product.getId());
 
-        product.setStock(product.getStock() - request.getQuantity());
+        product.setStock(product.getStock() - quantity);
 
         productMapper.updateProductStock(product);
-        orderService.addOrder(product.getId());
     }
 }

@@ -57,7 +57,7 @@ public class ApiProductController {
 
     @PostMapping("/api/products/{productId}/purchase")
     public ResponseEntity<String> purchaseProduct(@RequestBody OrderRequest request){
-        productService.reduceStock(request);
+        orderService.purchaseOrder(request);
         return ResponseEntity.ok("구매가 완료되었습니다.");
     }
 }

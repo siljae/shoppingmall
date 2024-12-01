@@ -34,56 +34,6 @@ public class ApiProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 구매 실패 - 제품 미발견")
-    public void purchaseProduct_productNotFound() {
-        // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(0);
-        request.setQuantity(1);
-
-        // When
-        doThrow(new ProductNotFoundException(1)).when(productService).reduceStock(request);
-        ResponseEntity<String> response = apiProductController.purchaseProduct(request);
-
-        // Then
-        assertEquals(400, response.getStatusCode().value());
-        assertEquals("제품을 찾을 수 없습니다.", response.getBody());
-    }
-
-    @Test
-    @DisplayName("상품 구매 실패 - 재고 부족")
-    public void purchaseProduct_outOfStock() {
-        // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
-        request.setQuantity(1);
-
-        // When
-        doThrow(new OutOfStockException(1)).when(productService).reduceStock(request);
-        ResponseEntity<String> response = apiProductController.purchaseProduct(request);
-
-        // Then
-        assertEquals(400, response.getStatusCode().value());
-        assertEquals("재고가 부족합니다.", response.getBody());
-    }
-
-    @Test
-    @DisplayName("상품 구매 실패 - 주문 추가 실패")
-    public void purchaseProduct_orderAdditionFailed() {
-        // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
-
-        // When
-        doThrow(new OrderNotFoundException(1)).when(orderService).addOrder(request.getProductId());
-        ResponseEntity<String> response = apiProductController.purchaseProduct(request);
-
-        // Then
-        assertEquals(500, response.getStatusCode().value());
-        assertEquals("주문 추가에 실패했습니다.", response.getBody());
-    }
-
-    @Test
     @DisplayName("상품 구매 성공")
     public void purchaseProduct_succeed(){
         // Given
@@ -92,8 +42,7 @@ public class ApiProductControllerTest {
         request.setQuantity(1);
 
         // When
-        doNothing().when(productService).reduceStock(request);
-        doNothing().when(orderService).addOrder(request.getProductId());
+        doNothing().when(orderService).purchaseOrder(request);
         ResponseEntity<String> response = apiProductController.purchaseProduct(request);
 
         // Then
