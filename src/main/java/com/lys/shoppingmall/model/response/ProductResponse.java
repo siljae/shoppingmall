@@ -13,10 +13,12 @@ public class ProductResponse {
     private int price;
     private int stock;
 
-    public ProductResponse(int id, String name, int price, int stock){
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
+    public static ProductResponse valueOf(int id, String name, int price, int stock) {
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setId(id);
+        productResponse.setName(name);
+        productResponse.setPrice(price);
+        productResponse.setStock(stock);
+        return productResponse;
     }
 }

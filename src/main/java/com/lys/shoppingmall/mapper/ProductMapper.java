@@ -25,5 +25,8 @@ public interface ProductMapper {
     void deleteProduct(int id);
 
     @Update("UPDATE products SET stock = #{stock} WHERE id = #{id}")
-    void updateProductStock(Product product);
+    void updateProductStock(@Param("id") int id, @Param("stock") int stock);
+
+    @Select("SELECT * FROM products WHERE id = #{id} FOR UPDATE")
+    Product getProductByIdForUpdate(int id);
 }
