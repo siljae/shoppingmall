@@ -4,7 +4,6 @@ import com.lys.shoppingmall.exception.OrderNotFoundException;
 import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.model.order.Order;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -13,11 +12,10 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
 
-    public OrderService(OrderMapper orderMapper, ProductService productService) {
+    public OrderService(OrderMapper orderMapper) {
         this.orderMapper = orderMapper;
     }
 
-    @Transactional
     public void addOrder(int productId){
         Order order = new Order();
         order.setProductId(productId);

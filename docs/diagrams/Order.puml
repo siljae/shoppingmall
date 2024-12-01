@@ -6,8 +6,10 @@ participant "ApiProductController" as Controller
 participant "ProductService" as ProductService
 participant "ProductMapper" as ProductMapper
 participant "OrderService" as OrderService
+participant "Order" as Order
 participant "OrderMapper" as OrderMapper
 database "Database" as DB
+
 
 User -> Controller : POST /api/products/{productId}/purchase(request)
 activate Controller
@@ -15,8 +17,8 @@ activate Controller
 Controller -> ProductService : reduceStock(request)
 activate ProductService
 
-note right of ProductService : 상품 조회 트랜잭션 시작
-    ProductService -> ProductMapper : getProductById(productId)
+note right of ProductService : 트랜잭션 시작
+    ProductService -> ProductMapper : getProductById(id)
     activate ProductMapper
         ProductMapper -> DB : getProductById(id)
         activate DB
@@ -25,75 +27,37 @@ note right of ProductService : 상품 조회 트랜잭션 시작
     ProductMapper --> ProductService : Product
     deactivate ProductMapper
 
-    opt 상품 조회 실패
+    opt product == null
     ProductService --> Controller : ProductNotFoundException
-    Controller --> User : 제품을 찾을 수 없습니다.
     note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
-    opt 재고 부족
+    opt product.stock < reqeust.quantity
     ProductService --> Controller : OutOfStockException
-    Controller --> User : 재고가 부족합니다.
     note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
 
-    ProductService -> ProductService : product.setStock(stock - request.quantity)
+    ProductService -> ProductService : product.setStock(stock - quantity)
     ProductService -> ProductMapper : updateProductStock(product)
-    activate ProductMapper
-        ProductMapper -> DB : updateProduct(product)
-        activate DB
-        DB --> ProductMapper : void
-        deactivate DB
-    ProductMapper --> ProductService : void
-    deactivate ProductMapper
-ProductService --> Controller : void
-deactivate ProductService
-note right of ProductService : 상품 조회 트랜잭션 종료
-
-Controller -> OrderService : addOrder(productId)
-activate OrderService
-
-note right of OrderService : 주문 추가 트랜잭션 시작
+    ProductMapper -> DB : updateProduct(product)
+    ProductService -> OrderService : addOrder(id)
+    activate OrderService
+        OrderService -> Order : new Order()
+        activate Order
+        Order --> OrderService : order
+        deactivate Order
+        OrderService -> OrderService : order.setProductId(id)
+        OrderService -> OrderService : order.setOrderDate(LocalDateTime.now());
+        deactivate Order
     OrderService -> OrderMapper : insertOrder(order)
-    activate OrderMapper
+    OrderMapper -> DB : insertOrder(order)
 
-        OrderMapper -> DB : insertOrder(order)
-        activate DB
-        DB --> OrderMapper : void
-        deactivate DB
-    OrderMapper --> OrderService : void
-    deactivate OrderMapper
-
-    opt 주문 추가 실패
+    opt order.id == 0
     OrderService --> Controller : OrderNotFoundException
-    note right of OrderService : 예외 발생으로 인한 트랜잭션 종료
-    Controller -> ProductService : restoreStock(ProductId, quantity)
-    note right of ProductService : 재고 복원 트랜잭션 시작
-    activate ProductService
-        ProductService -> ProductMapper : getProductById(productId)
-        activate ProductMapper
-            ProductMapper -> DB : getProductById(id)
-            activate DB
-            DB --> ProductMapper : Product
-            deactivate DB
-        ProductMapper --> ProductService : Product
-        deactivate ProductMapper
-        ProductService -> ProductService : product.setStock(stock + request.quantity)
-            ProductService -> ProductMapper : updateProductStock(product)
-            activate ProductMapper
-                ProductMapper -> DB : updateProductStock(product)
-                activate DB
-                DB --> ProductMapper : void
-                deactivate DB
-            ProductMapper --> ProductService : void
-            deactivate ProductMapper
-            note right of ProductService : 재고 복원 트랜잭션 종료
-        ProductService --> Controller : void
-        deactivate ProductService
-    Controller --> User : 주문 추가에 실패했습니다.
+    note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
-OrderService --> Controller : void
-deactivate OrderService
-note right of OrderService : 주문 추가 트랜잭션 종료
+    deactivate OrderService
+    deactivate ProductService
+    note right of ProductService : 트랜잭션 종료
 
 Controller --> User : 구매가 완료되었습니다.
 deactivate Controller
