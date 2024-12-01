@@ -2,6 +2,7 @@ package com.lys.shoppingmall.exception;
 
 import org.springframework.http.HttpStatusCode;
 
+
 public abstract class ServiceException extends RuntimeException {
     public abstract HttpStatusCode getHttpStatusCode();
     public abstract String getErrorCode();

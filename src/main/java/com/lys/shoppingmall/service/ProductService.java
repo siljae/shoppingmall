@@ -15,9 +15,11 @@ import java.util.List;
 @Service
 public class ProductService {
     private final ProductMapper productMapper;
+    private final OrderService orderService;
 
-    public ProductService(ProductMapper productMapper) {
+    public ProductService(ProductMapper productMapper, OrderService orderService) {
         this.productMapper = productMapper;
+        this.orderService = orderService;
     }
 
     public List<Product> getAllProducts(){
@@ -83,14 +85,6 @@ public class ProductService {
         product.setStock(product.getStock() - request.getQuantity());
 
         productMapper.updateProductStock(product);
-    }
-
-   @Transactional(propagation = Propagation.REQUIRES_NEW)
-   public void restoreStock(int productId, int quantity){
-       Product product = productMapper.getProductById(productId);
-
-       product.setStock(product.getStock() + quantity);
-
-       productMapper.updateProductStock(product);
+        orderService.addOrder(product.getId());
     }
 }

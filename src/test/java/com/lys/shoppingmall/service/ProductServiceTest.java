@@ -92,6 +92,7 @@ public class ProductServiceTest {
         product.setStock(10);
 
         when(productMapper.getProductById(1)).thenReturn(product);
+        doNothing().when(orderService).addOrder(product.getId());
 
         // When
         productService.reduceStock(request);
@@ -99,5 +100,6 @@ public class ProductServiceTest {
         // Then
         assertEquals(5, product.getStock());
         verify(productMapper, times(1)).updateProductStock(product);
+        verify(orderService).addOrder(product.getId());
     }
 }
