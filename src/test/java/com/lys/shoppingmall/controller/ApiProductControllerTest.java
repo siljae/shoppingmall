@@ -1,52 +1,51 @@
 package com.lys.shoppingmall.controller;
 
-import com.lys.shoppingmall.exception.OrderNotFoundException;
-import com.lys.shoppingmall.exception.OutOfStockException;
-import com.lys.shoppingmall.exception.ProductNotFoundException;
+import com.lys.shoppingmall.model.order.Order;
 import com.lys.shoppingmall.model.request.OrderRequest;
-import com.lys.shoppingmall.service.OrderService;
-import com.lys.shoppingmall.service.ProductService;
+import com.lys.shoppingmall.model.response.OrderResponse;
+import com.lys.shoppingmall.service.PurchaseService;
+import com.lys.shoppingmall.service.PurchaseServiceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 
 public class ApiProductControllerTest {
     @Mock
-    ProductService productService;
-
-    @Mock
-    OrderService orderService;
+    PurchaseService purchaseService;
 
     @InjectMocks
     ApiProductController apiProductController;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     @DisplayName("상품 구매 성공")
-    public void purchaseProduct_succeed(){
+    public void purchaseProduct_succeed() {
         // Given
         OrderRequest request = new OrderRequest();
         request.setProductId(1);
-        request.setQuantity(1);
+
+        Order order = Order.createOrder(1);
+        order.setId(1);
+
+        doReturn(order).when(purchaseService).purchase(request.getProductId());
 
         // When
-        doNothing().when(orderService).purchaseOrder(request);
-        ResponseEntity<String> response = apiProductController.purchaseProduct(request);
+        OrderResponse orderResponse = apiProductController.purchaseProduct(request);
 
         // Then
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals("구매가 완료되었습니다.", response.getBody());
+        assertNotNull(orderResponse);
+        assertEquals(1, orderResponse.getId());
+        assertEquals(request.getProductId(), orderResponse.getProductId());
     }
 }

@@ -13,7 +13,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -23,9 +23,9 @@ public class ProductController {
     }
 
     @GetMapping("/products/{productId}")
-    public String detailProduct(@PathVariable("productId") int productId, Model model){
+    public String detailProduct(@PathVariable("productId") int productId, Model model) {
         Product product = productService.getById(productId);
-        ProductResponse productResponse = new ProductResponse(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        ProductResponse productResponse = ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getStock());
         model.addAttribute("product", productResponse);
         return "product-detail";
     }

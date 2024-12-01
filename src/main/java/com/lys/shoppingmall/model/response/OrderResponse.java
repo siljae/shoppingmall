@@ -1,5 +1,6 @@
 package com.lys.shoppingmall.model.response;
 
+import com.lys.shoppingmall.model.order.Order;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,9 +15,11 @@ public class OrderResponse {
     private int productId;
     private LocalDateTime orderDate;
 
-    public OrderResponse(int id, int productId, LocalDateTime orderDate){
-        this.id = id;
-        this.productId = productId;
-        this.orderDate = orderDate;
+    public static OrderResponse valueOf(Order order) {
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.id = order.getId();
+        orderResponse.productId = order.getProductId();
+        orderResponse.orderDate = order.getOrderDate();
+        return orderResponse;
     }
 }
