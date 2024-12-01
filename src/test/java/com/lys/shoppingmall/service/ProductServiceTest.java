@@ -3,6 +3,7 @@ package com.lys.shoppingmall.service;
 import com.lys.shoppingmall.exception.OutOfStockException;
 import com.lys.shoppingmall.exception.ProductNotFoundException;
 import com.lys.shoppingmall.mapper.ProductMapper;
+import com.lys.shoppingmall.model.order.Order;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,64 +43,61 @@ public class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 구매 후 재고 차감 실패 - 모델의 값이 null일 경우")
-    public void reduceStock_ProductNotFound(){
+    @DisplayName("제품 없음 예외 발생")
+    public void reduceStock_productNotFound() {
         // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
-        request.setQuantity(1);
+        int productId = 1;
+        int quantity = 1;
 
-        when(productMapper.getProductById(request.getProductId())).thenReturn(null);
+        // Mocking productMapper methods
+        when(productMapper.getProductById(productId)).thenReturn(null); // 제품이 없음
 
         // When & Then
-        ProductNotFoundException exception = assertThrows(ProductNotFoundException.class, () -> {
-            productService.reduceStock(request);
+        assertThrows(ProductNotFoundException.class, () -> {
+            productService.reduceStock(productId, quantity);
         });
-        assertEquals("Product with ID 1 is not found.", exception.getMessage());
+        verify(productMapper, never()).updateProductStock(any(Product.class)); // 재고 감소가 이루어지지 않아야 함
     }
 
     @Test
-    @DisplayName("재고 차감 실패 - 재고가 구매 수량보다 작을 경우")
-    public void reduceStock_OutOfStock(){
+    @DisplayName("재고 부족 예외 발생")
+    public void reduceStock_outOfStock() {
         // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
-        request.setQuantity(5);
-
+        int productId = 1;
+        int quantity = 10; // 요청하는 수량
         Product product = new Product();
-        product.setId(1);
-        product.setStock(3);
+        product.setId(productId);
+        product.setStock(5); // 현재 재고
 
-        when(productMapper.getProductById(1)).thenReturn(product);
+        // Mocking productMapper methods
+        when(productMapper.getProductById(productId)).thenReturn(product);
 
         // When & Then
-        OutOfStockException exception = assertThrows(OutOfStockException.class, () ->{
-            productService.reduceStock(request);
-            });
-        assertEquals("Product with ID 1 has insufficient stock.", exception.getMessage());
+        assertThrows(OutOfStockException.class, () -> {
+            productService.reduceStock(productId, quantity);
+        });
+        verify(productMapper, never()).updateProductStock(any(Product.class)); // 재고 감소가 이루어지지 않아야 함
     }
 
     @Test
-    @DisplayName("재고 차감 성공")
-    public void reduceStock_success(){
+    @DisplayName("재고 감소 성공")
+    public void reduceStock_success() {
         // Given
-        OrderRequest request = new OrderRequest();
-        request.setProductId(1);
-        request.setQuantity(5);
-
+        int productId = 1;
+        int quantity = 1;
         Product product = new Product();
-        product.setId(1);
-        product.setStock(10);
+        product.setId(productId);
+        product.setStock(5); // 현재 재고
 
-        when(productMapper.getProductById(1)).thenReturn(product);
-        doNothing().when(orderService).addOrder(product.getId());
+        // Mocking productMapper methods
+        when(productMapper.getProductById(productId)).thenReturn(product);
+        doNothing().when(productMapper).updateProductStock(product);
 
         // When
-        productService.reduceStock(request);
+        productService.reduceStock(productId, quantity);
 
         // Then
-        assertEquals(5, product.getStock());
-        verify(productMapper, times(1)).updateProductStock(product);
-        verify(orderService).addOrder(product.getId());
+        assertEquals(4, product.getStock()); // 재고가 4로 줄어야 함
+        verify(productMapper).updateProductStock(product);
     }
 }

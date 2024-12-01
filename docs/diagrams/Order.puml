@@ -6,7 +6,6 @@ participant "ApiProductController" as Controller
 participant "ProductService" as ProductService
 participant "ProductMapper" as ProductMapper
 participant "OrderService" as OrderService
-participant "Order" as Order
 participant "OrderMapper" as OrderMapper
 database "Database" as DB
 
@@ -31,7 +30,7 @@ note right of ProductService : 트랜잭션 시작
     ProductService --> Controller : ProductNotFoundException
     note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
-    opt product.stock < reqeust.quantity
+    opt product.stock < request.quantity
     ProductService --> Controller : OutOfStockException
     note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
     end
@@ -41,21 +40,12 @@ note right of ProductService : 트랜잭션 시작
     ProductMapper -> DB : updateProduct(product)
     ProductService -> OrderService : addOrder(id)
     activate OrderService
-        OrderService -> Order : new Order()
-        activate Order
-        Order --> OrderService : order
-        deactivate Order
-        OrderService -> OrderService : order.setProductId(id)
-        OrderService -> OrderService : order.setOrderDate(LocalDateTime.now());
-        deactivate Order
     OrderService -> OrderMapper : insertOrder(order)
+    activate OrderMapper
     OrderMapper -> DB : insertOrder(order)
-
-    opt order.id == 0
-    OrderService --> Controller : OrderNotFoundException
-    note right of ProductService : 예외 발생으로 인한 트랜잭션 종료
-    end
+    deactivate OrderMapper
     deactivate OrderService
+    ProductService --> Controller : void
     deactivate ProductService
     note right of ProductService : 트랜잭션 종료
 
