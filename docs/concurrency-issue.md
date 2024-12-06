@@ -27,7 +27,7 @@ SELECT
 
 ### 4. 왜 이런 일이 일어났는가?          
   - 다수의 유저가 거의 동시에 데이터베이스에 접근하면서 같은 재고를 조회하고 재고 차감하는 과정에서 재고가 차감되기 전에 근사하게 데이터베이스에 접근한 유저가 재고 조회를 하고 재고를 차감하면서 재고가 덮어씌워지는 일이 발생했습니다.<br>
-  ![PurchaseError](./images/nGrinder-PurchaseTest-Error.png)
+  ![PurchaseError](./images/Order-Concurrency-Error.png)
   
 
 다음편 : DB락을 통한 동시성 제어
