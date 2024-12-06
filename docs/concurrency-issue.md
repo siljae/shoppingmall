@@ -26,7 +26,8 @@ SELECT
 ![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock](./images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock.png)
 
 ### 4. 왜 이런 일이 일어났는가?          
-  1. 다수의 유저가 거의 동시에 데이터베이스에 접근하면서 같은 재고 상태에서 구매를 하고 재고를 차감하게 되었습니다.
-  2. 준비된 재고는 500개였지만, 이러한 행위가 여러 번에 걸쳐 테스트가 끝날 때까지 반복되면서 1,654건의 주문을 기록하게 된 원인이 되어 동시성 문제가 발생했습니다.
+  - 다수의 유저가 거의 동시에 데이터베이스에 접근하면서 같은 재고를 조회하고 재고 차감하는 과정에서 재고가 차감되기 전에 근사하게 데이터베이스에 접근한 유저가 재고 조회를 하고 재고를 차감하면서 재고가 덮어씌워지는 일이 발생했습니다.<br>
+  ![PurchaseError](./images/nGrinder-PurchaseTest-Error.png)
+  
 
 다음편 : DB락을 통한 동시성 제어
