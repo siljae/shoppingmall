@@ -13,6 +13,7 @@ participant "OrderMapper" as OrderMapper
 User -> Controller : POST /api/products/{productId}/purchase(request)
 activate Controller
 
+
 Controller -> PurchaseService : purchase(productId)
 note right of PurchaseService : 트랜잭션 시작
 activate PurchaseService
@@ -20,17 +21,18 @@ activate PurchaseService
 PurchaseService -> ProductService : reduceStock(productId, 1)
 activate ProductService
 
-ProductService -> ProductMapper : getProductById(productId)
+note right of ProductService : 배타 락 획득
+ProductService -> ProductMapper : getProductByIdForUpdate(productId)
 activate ProductMapper
 ProductMapper --> ProductService : Product
 deactivate ProductMapper
 
-opt product.stock < request.quantity
+opt product.stock < quantity
 ProductService --> Controller : OutOfStockException
 end
 
-ProductService -> ProductService : product.setStock(stock - quantity)
-ProductService -> ProductMapper : updateProductStock(product)
+ProductService -> ProductService : product.setStock(product.getStock() - quantity)
+ProductService -> ProductMapper : updateProductStock(product.getId(), product.getStock())
 activate ProductMapper
 ProductMapper --> ProductService :
 deactivate ProductMapper
@@ -49,7 +51,7 @@ deactivate OrderService
 
 PurchaseService --> Controller : Order
 deactivate PurchaseService
-note right of PurchaseService : 트랜잭션 종료
+note right of PurchaseService : 배타 락 반납\n트랜잭션 종료
 
 Controller --> User : 구매가 완료되었습니다.
 deactivate Controller
