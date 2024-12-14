@@ -17,14 +17,10 @@
   - 구매 기록 : 1,654건의 주문이 기록되었습니다. (구매 성공 비율: 약 331%)
   - 재고 상태:  설정한 재고는 500개였으며, 남은 재고는 0개입니다. (판매된 재고 비율: 100%)
 
+![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock](./images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock.png)
 ![nGrinder-PurchaseTest-Report](./images/nGrinder-PurchaseTest-Report.png)
 
-```mysql
-SELECT 
-    (SELECT COUNT(*) FROM orders WHERE order_date > '2024-12-01 02:07:00') AS order_count,
-    (SELECT stock FROM products WHERE id = 1) AS product_stock;
-```
-![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock](./images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock.png)
+
 
 ### 4. 왜 이런 일이 일어났는가?          
   - **원인**: 다수의 유저가 거의 동시에 같은 시점의 재고 또는 다른 시점의 재고를 조회하게 되어 트랜잭션이 진행되면서 데이터의 일관성이 깨졌습니다. 이로 인해 아래와 같은 이상 현상이 발생했습니다.
