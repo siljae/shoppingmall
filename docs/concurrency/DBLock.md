@@ -28,9 +28,11 @@
 
 ### SERIALIZABLE 로 격리 수준 변경하기   
   - **격리 수준 변경**:
+    - 공유 락 획득: 이 설정에 따라 모든 조회 시 공유 락을 획득하여 동시성 문제를 방지합니다.
     ```sql
       SET GLOBAL TRANSACTION_ISOLATION = 'SERIALIZABLE';
     ```
+  
 ![OrderPlantUML-Update-SharedLock](../images/OrderPlantUML-Update-SharedLock.png)
 ## 3. 구매 테스트
 ### 1. 테스트 시나리오
@@ -61,12 +63,13 @@
 ![Order-Concurrency-Error-SharedLock](../images/Order-Concurrency-Error-SharedLock.png)
    
 ### 6. 개선 방안
-  - 상품 조회 시 공유 락이 아닌 배타 락을 획득하도록 설정하여 한 번에 한 명만 재고를 조회 하고 차감할 수 있도록 하면 동시성 문제가 해결될 수 있을 것으로 예상됩니다.
+  - 상품 조회 시 공유 락이 아닌 배타 락을 획득하도록 설정하여 한 번에 한 명만 재고를 조회하고 차감할 수 있도록 하면 동시성 문제와 데드락을 해결할 수 있을 것으로 예상됩니다.
 
 ## 4. 한 번에 한 명만 재고 조회 및 차감할 수 있게 설정하기
 
 ### REPEATABLE READ 로 격리 수준 변경하기   
   - **격리 수준 변경**:
+    - 공유 락 해제: 기존의 SERIALIZABLE 격리 수준에서 모든 조회 시 공유 락을 획득하던 것을 REPEATABLE READ로 변경하여 해제하였습니다.
     ```sql
       SET GLOBAL TRANSACTION_ISOLATION = 'REPEATABLE-READ';
     ```
