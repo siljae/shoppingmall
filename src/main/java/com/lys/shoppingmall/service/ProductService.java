@@ -10,7 +10,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -57,34 +56,18 @@ public class ProductService {
     }
 
     public void reduceStock(int productId, int quantity) {
-        Integer productStock = getProductStock(productId);
+        String productSalesKey = "productSales:" + productId;
+        Product product = productMapper.getProductByIdForUpdate(productId);
+        Integer productSales = (Integer) redisTemplate.opsForValue().get(productSalesKey);
 
-        if (productStock == null) throw new ProductNotFoundException(productId);
-        if (productStock < quantity) throw new OutOfStockException(productId);
-
-        redisTemplate.opsForValue().decrement("product:" + productId, quantity);
-    }
-
-    public Integer getProductStock(int productId) {
-        String key = "product:" + productId;
-        redisTemplate.watch(key);
-
-        Integer productStock = (Integer) redisTemplate.opsForValue().get(key);
-
-        if (productStock != null) {
-            return productStock;
+        if (productSales == null) {
+            productSales = 0;
+            redisTemplate.opsForValue().set(productSalesKey, productSales);
         }
 
-        try {
-            productStock = productMapper.getProductStockById(productId);
-            redisTemplate.multi();
-            redisTemplate.opsForValue().set(key, productStock);
-            redisTemplate.exec();
-        } catch (Exception e) {
-            redisTemplate.unwatch();
-            throw e;
-        }
-        return productStock;
-    }
+        if (product == null) throw new ProductNotFoundException(productId);
+        if (product.getStock() - productSales < quantity) throw new OutOfStockException(productId);
 
+        redisTemplate.opsForValue().increment(productSalesKey, quantity);
+    }
 }
