@@ -6,14 +6,17 @@ import com.lys.shoppingmall.mapper.ProductMapper;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.ProductRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductMapper productMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public List<Product> getAllProducts() {
         return productMapper.getAllProducts();
@@ -54,13 +57,34 @@ public class ProductService {
     }
 
     public void reduceStock(int productId, int quantity) {
-        Product product = productMapper.getProductByIdForUpdate(productId);
+        Integer productStock = getProductStock(productId);
 
-        if (product == null) throw new ProductNotFoundException(productId);
-        if (product.getStock() < quantity) throw new OutOfStockException(product.getId());
+        if (productStock == null) throw new ProductNotFoundException(productId);
+        if (productStock < quantity) throw new OutOfStockException(productId);
 
-        product.setStock(product.getStock() - quantity);
-
-        productMapper.updateProductStock(product.getId(), product.getStock());
+        redisTemplate.opsForValue().decrement("product:" + productId, quantity);
     }
+
+    public Integer getProductStock(int productId) {
+        String key = "product:" + productId;
+        redisTemplate.watch(key);
+
+        Integer productStock = (Integer) redisTemplate.opsForValue().get(key);
+
+        if (productStock != null) {
+            return productStock;
+        }
+
+        try {
+            productStock = productMapper.getProductStockById(productId);
+            redisTemplate.multi();
+            redisTemplate.opsForValue().set(key, productStock);
+            redisTemplate.exec();
+        } catch (Exception e) {
+            redisTemplate.unwatch();
+            throw e;
+        }
+        return productStock;
+    }
+
 }
