@@ -3,7 +3,6 @@ package com.lys.shoppingmall.service;
 import com.lys.shoppingmall.model.order.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service

@@ -39,6 +39,14 @@ services:
     volumes:
       - ngrinder_agent_data:/opt/ngrinder-agent  # 에이전트 데이터 저장을 위한 볼륨
 
+  redis:
+    image: redis:7.4.1
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   db_data:
   ngrinder_agent_data:  # nGrinder 에이전트 데이터 저장을 위한 볼륨

@@ -29,4 +29,7 @@ public interface ProductMapper {
 
     @Select("SELECT * FROM products WHERE id = #{id} FOR UPDATE")
     Product getProductByIdForUpdate(int id);
+
+    @Select("SELECT stock FROM products WHERE id = #{id}")
+    Integer getProductStockById(int id);
 }

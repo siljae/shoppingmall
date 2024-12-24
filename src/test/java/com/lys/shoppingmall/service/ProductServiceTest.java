@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,12 +23,19 @@ public class ProductServiceTest {
     @Mock
     private ProductMapper productMapper;
 
+    @Mock
+    private RedisTemplate<String, Product> redisTemplate;
+
     @InjectMocks
     private ProductService productService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // Mocking ValueOperations
+        ValueOperations<String, Product> valueOperations = mock(ValueOperations.class);
+        when(redisTemplate.opsForValue()).thenReturn(valueOperations);
     }
 
     @Test
@@ -174,6 +183,7 @@ public class ProductServiceTest {
         product.setStock(5); // 현재 재고
 
         // Mocking productMapper methods
+        when(redisTemplate.opsForValue().get("product:" + productId)).thenReturn(null); // Redis 에서 제품이 없음, (Redis 추가 12-22)
         when(productMapper.getProductByIdForUpdate(productId)).thenReturn(product);
         doNothing().when(productMapper).updateProductStock(product.getId(), product.getStock());
 
@@ -184,4 +194,6 @@ public class ProductServiceTest {
         assertEquals(4, product.getStock()); // 재고가 4로 줄어야 함
         verify(productMapper).updateProductStock(product.getId(), product.getStock());
     }
+
+
 }
