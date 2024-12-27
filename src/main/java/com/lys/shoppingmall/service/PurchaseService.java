@@ -8,12 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PurchaseService {
-    private final ProductService productService;
+    private final ProductStockRedisService productStockRedisService;
     private final OrderService orderService;
 
     @Transactional
     public Order purchase(int productId) {
-        productService.reduceStock(productId, 1);
+        productStockRedisService.reduceStock(productId, 1);
         return orderService.makeOrder(productId);
     }
 }

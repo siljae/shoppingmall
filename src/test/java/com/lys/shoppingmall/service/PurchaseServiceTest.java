@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 public class PurchaseServiceTest {
     @Mock
-    ProductService productService;
+    ProductStockRedisService productStockRedisService;
 
     @Mock
     OrderService orderService;
@@ -36,7 +36,7 @@ public class PurchaseServiceTest {
 
         Order order = Order.createOrderById(1, 1);
 
-        doNothing().when(productService).reduceStock(productId, 1);
+        doNothing().when(productStockRedisService).reduceStock(productId, 1);
         when(orderService.makeOrder(productId)).thenReturn(order);
 
         // When
