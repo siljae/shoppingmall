@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductMapper productMapper;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final ProductStockRedisService productStockRedisService;
 
     public List<Product> getAllProducts() {
         return productMapper.getAllProducts();
@@ -55,19 +55,5 @@ public class ProductService {
         productMapper.deleteProduct(id);
     }
 
-    public void reduceStock(int productId, int quantity) {
-        String productSalesKey = "productSales:" + productId;
-        Product product = productMapper.getProductByIdForUpdate(productId);
-        Integer productSales = (Integer) redisTemplate.opsForValue().get(productSalesKey);
 
-        if (productSales == null) {
-            productSales = 0;
-            redisTemplate.opsForValue().set(productSalesKey, productSales);
-        }
-
-        if (product == null) throw new ProductNotFoundException(productId);
-        if (product.getStock() - productSales < quantity) throw new OutOfStockException(productId);
-
-        redisTemplate.opsForValue().increment(productSalesKey, quantity);
-    }
 }

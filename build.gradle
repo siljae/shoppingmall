@@ -27,7 +27,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'                              // Lombok Annotation Process
     compileOnly 'org.projectlombok:lombok:1.18.26'                                      // Lombok Compile
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'            // Redis
-    implementation 'org.redisson:redisson-spring-boot-starter:3.16.4'                   //Redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.40.1'                   //Redisson
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
