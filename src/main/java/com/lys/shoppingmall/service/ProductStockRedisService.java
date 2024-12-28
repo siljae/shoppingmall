@@ -1,12 +1,14 @@
 package com.lys.shoppingmall.service;
 
+import com.lys.shoppingmall.exception.LockNotAcquireException;
 import com.lys.shoppingmall.exception.OutOfStockException;
 import com.lys.shoppingmall.exception.ProductNotFoundException;
+import com.lys.shoppingmall.mapper.OrderMapper;
 import com.lys.shoppingmall.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -14,55 +16,69 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class ProductStockRedisService {
-    private final RedisTemplate<String, Object> redisTemplate;
     private final RedissonClient redissonClient;
     private final ProductMapper productMapper;
+    private final OrderMapper orderMapper;
+
+    private static final int LOCK_WAIT_TIMEOUT = 10;
+    private static final int LOCK_ACQUIRE_TIME = 5;
+
+
+    private String getProductKey(int productId) {
+        return "productSale:" + productId;
+    }
 
     public void reduceStock(int productId, int quantity) {
-        String productStockKey = "productStock:" + productId;
-        String productSalesKey = "productSales:" + productId;
-        RLock lock = redissonClient.getLock("lock:" + productStockKey);
+        // 최대 재고 조회
+        Integer maxStock = productMapper.getProductStockById(productId);
+        if (maxStock == null) {
+            throw new ProductNotFoundException(productId);
+        }
 
+        // 판매 수량
+        Long productSale = fetchProductSalesOrInitialize(productId);
+        if (productSale >= maxStock) {
+            throw new OutOfStockException(productId);
+        }
+
+        RAtomicLong rProductSale = redissonClient.getAtomicLong(getProductKey(productId));
+        long currentSale = rProductSale.addAndGet(quantity);
+
+        // 검증
+        if (currentSale > maxStock) {
+            rProductSale.addAndGet(-quantity);
+            throw new OutOfStockException(productId);
+        }
+    }
+
+    private Long fetchProductSalesOrInitialize(int productId) {
+        String productSaleKey = getProductKey(productId);
+        boolean isExists = redissonClient.getAtomicLong(productSaleKey).isExists();
+        if (!isExists) {
+            updateRedisProductSaleCount(productId);
+        }
+        RAtomicLong rSaleCount = redissonClient.getAtomicLong(productSaleKey);
+        return rSaleCount.get();
+    }
+
+    public void updateRedisProductSaleCount(int productId) {
+        String productSaleKey = getProductKey(productId);
+        RLock lock = redissonClient.getLock("lock:" + productSaleKey);
         try {
-            if (!lock.tryLock(2, 3, TimeUnit.SECONDS)) {
-                throw new RuntimeException("Could not acquire lock");
+            if (!lock.tryLock(LOCK_WAIT_TIMEOUT, LOCK_ACQUIRE_TIME, TimeUnit.SECONDS)) {
+                throw new LockNotAcquireException(productId);
             }
-            Integer productStock = fetchProductStockOrInitialize(productId, productStockKey);
-            if (productStock == null) {
-                throw new ProductNotFoundException(productId);
+            boolean isExists = redissonClient.getAtomicLong(productSaleKey).isExists();
+            if (!isExists) {
+                int saleCount = orderMapper.getOrderCountByProductId(productId);
+                RAtomicLong rSaleCount = redissonClient.getAtomicLong(productSaleKey);
+                rSaleCount.set(saleCount);
             }
-
-            Integer productSales = fetchProductSalesOrInitialize(productSalesKey);
-            int currentStock = productStock - productSales;
-
-            if (currentStock < quantity) {
-                redisTemplate.opsForValue().decrement(productSalesKey, productSales - productStock);
-                throw new OutOfStockException(productId);
-            }
-            redisTemplate.opsForValue().increment(productSalesKey, quantity);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new LockNotAcquireException(productId, e);
         } finally {
             lock.unlock();
         }
-    }
-
-    public Integer fetchProductStockOrInitialize(int productId, String productStockKey) {
-        Integer productStock = (Integer) redisTemplate.opsForValue().get(productStockKey);
-        if (productStock == null) {
-            productStock = productMapper.getProductStockById(productId);
-            redisTemplate.opsForValue().set(productStockKey, productStock);
-        }
-        return productStock;
-    }
-
-    public Integer fetchProductSalesOrInitialize(String productSSales) {
-        Integer productSales = (Integer) redisTemplate.opsForValue().get(productSSales);
-        if (productSales == null) {
-            productSales = 0;
-            redisTemplate.opsForValue().set(productSSales, productSales);
-        }
-        return productSales;
     }
 
 

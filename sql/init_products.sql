@@ -2,7 +2,7 @@ CREATE TABLE products (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     price INT NOT NULL,
-    stock INT NOT NULL
+    max_stock INT NOT NULL
 );
 
 CREATE TABLE orders(

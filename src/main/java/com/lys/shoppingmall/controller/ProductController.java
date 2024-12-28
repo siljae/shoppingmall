@@ -25,7 +25,7 @@ public class ProductController {
     @GetMapping("/products/{productId}")
     public String detailProduct(@PathVariable("productId") int productId, Model model) {
         Product product = productService.getById(productId);
-        ProductResponse productResponse = ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        ProductResponse productResponse = ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getMaxStock());
         model.addAttribute("product", productResponse);
         return "product-detail";
     }

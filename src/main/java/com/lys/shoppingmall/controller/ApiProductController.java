@@ -26,7 +26,7 @@ public class ApiProductController {
     public ProductListResponse getProducts() {
         List<Product> products = productService.getAllProducts();
         List<ProductResponse> productsResponse = products.stream()
-                .map(product -> ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getStock()))
+                .map(product -> ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getMaxStock()))
                 .toList();
         return new ProductListResponse(productsResponse);
     }
@@ -34,14 +34,14 @@ public class ApiProductController {
     @PostMapping("/api/products")
     public ProductResponse createProduct(@RequestBody ProductRequest request) {
         Product product = productService.addProduct(request);
-        return ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        return ProductResponse.valueOf(product.getId(), product.getName(), product.getPrice(), product.getMaxStock());
     }
 
     @PutMapping("/api/products/{productId}")
     public ProductResponse updateProduct(@PathVariable("productId") int productId, @RequestBody ProductRequest request) {
-        Product product = Product.createProduct(request.getName(), request.getPrice(), request.getStock());
+        Product product = Product.createProduct(request.getName(), request.getPrice(), request.getMaxStock());
         Product Updatedproduct = productService.updateProduct(productId, product);
-        return ProductResponse.valueOf(Updatedproduct.getId(), Updatedproduct.getName(), Updatedproduct.getPrice(), Updatedproduct.getStock());
+        return ProductResponse.valueOf(Updatedproduct.getId(), Updatedproduct.getName(), Updatedproduct.getPrice(), Updatedproduct.getMaxStock());
     }
 
     @DeleteMapping("/api/products/{productId}")

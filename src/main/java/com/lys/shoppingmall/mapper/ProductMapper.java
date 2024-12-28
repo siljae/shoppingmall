@@ -11,25 +11,25 @@ public interface ProductMapper {
     @Select("SELECT * FROM products")
     List<Product> getAllProducts();
 
-    @Insert("INSERT INTO products(name, price, stock) VALUES (#{name}, #{price}, #{stock})")
+    @Insert("INSERT INTO products(name, price, max_stock) VALUES (#{name}, #{price}, #{maxStock})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertProduct(Product product);
 
     @Select("SELECT * FROM products WHERE id = #{id}")
     Product getProductById(int id);
 
-    @Update("UPDATE products SET name = #{name}, price = #{price}, stock = #{stock} WHERE id = #{id}")
+    @Update("UPDATE products SET name = #{name}, price = #{price}, max_stock = #{maxStock} WHERE id = #{id}")
     void updateProduct(Product product);
 
     @Delete("DELETE FROM products WHERE id = #{id}")
     void deleteProduct(int id);
 
-    @Update("UPDATE products SET stock = #{stock} WHERE id = #{id}")
-    void updateProductStock(@Param("id") int id, @Param("stock") int stock);
+    @Update("UPDATE products SET max_stock = #{maxStock} WHERE id = #{id}")
+    void updateProductStock(@Param("id") int id, @Param("maxStock") int stock);
 
     @Select("SELECT * FROM products WHERE id = #{id} FOR UPDATE")
     Product getProductByIdForUpdate(int id);
 
-    @Select("SELECT stock FROM products WHERE id = #{id}")
+    @Select("SELECT max_stock FROM products WHERE id = #{id}")
     Integer getProductStockById(int id);
 }

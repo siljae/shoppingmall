@@ -1,9 +1,10 @@
 USE shoppingmall;
 SHOW TABLES;
 
+DROP TABLE products;
 DROP TABLE orders;
 
-INSERT INTO products (name, price, stock) VALUES
+INSERT INTO products (name, price, max_stock) VALUES
 ('사과', 1000, 50),
 ('바나나', 800, 30),
 ('오렌지', 1200, 20),

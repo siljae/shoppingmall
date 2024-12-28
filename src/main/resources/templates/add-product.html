@@ -21,52 +21,55 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <body>
-    <div class="container mt-4">
-        <div th:replace="~{header :: content}"></div>
-        <h2>상품 추가</h2>
-        <form id="addProductForm">
-            <div class="form-group">
-                <label for="productName">상품 이름</label>
-                <input type="text" class="form-control" id="productName" name="productName" required>
-            </div>
-            <div class="form-group">
-                <label for="price">가격</label>
-                <input type="number" class="form-control" id="price" name="price" required min="0" step="1">
-            </div>
-            <div class="form-group">
-                <label for="stock">수량</label>
-                <input type="number" class="form-control" id="stock" name="stock" required min="0" step="1">
-            </div>
-            <button type="reset" class="btn btn-reset">리셋</button>
-            <button type="submit" class="btn btn-submit" id="submitBtn">제출</button>
-            <a href="/products" class="btn btn-cancel">취소</a>
-        </form>
-    </div>
+<div class="container mt-4">
+    <div th:replace="~{header :: content}"></div>
+    <h2>상품 추가</h2>
+    <form id="addProductForm">
+        <div class="form-group">
+            <label for="productName">상품 이름</label>
+            <input type="text" class="form-control" id="productName" name="productName" required>
+        </div>
+        <div class="form-group">
+            <label for="price">가격</label>
+            <input type="number" class="form-control" id="price" name="price" required min="0" step="1">
+        </div>
+        <div class="form-group">
+            <label for="maxStock">수량</label>
+            <input type="number" class="form-control" id="maxStock" name="maxStock" required min="0" step="1">
+        </div>
+        <button type="reset" class="btn btn-reset">리셋</button>
+        <button type="submit" class="btn btn-submit" id="submitBtn">제출</button>
+        <a href="/products" class="btn btn-cancel">취소</a>
+    </form>
+</div>
 
-    <script>
-        $(document).ready(function (){
-            $('#submitBtn').click(function (){
-                const productData = {
-                    name: $('#productName').val(),
-                    price: parseInt($('#price').val()),
-                    stock: parseInt($('#stock').val())
-                };
+<script>
+    $(document).ready(function (){
+        $('#addProductForm').submit(function (event){
+            event.preventDefault();
 
-                $.ajax({
-                    url: '/api/products',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(productData),
-                    success: function (){
-                        alert('상품이 추가되었습니다.');
-                        window.location.href = '/products';
-                    },
-                    error: function (xhr, status, error){
-                        alert('상품 추가에 실패했습니다: ' + xhr.responseText);
-                    }
-                });
+            const productData = {
+                name: $('#productName').val(),
+                price: parseInt($('#price').val()),
+                maxStock: parseInt($('#maxStock').val())
+            };
+
+            $.ajax({
+                url: '/api/products',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(productData),
+                success: function (){
+                    alert('상품이 추가되었습니다.');
+                    window.location.href = '/products';
+                },
+                error: function (xhr, status, error){
+                    alert('상품 추가에 실패했습니다 - 에러가 발생했습니다. 관리자에게 문의하세요 ');
+                    console.error('상품 추가 실패 오류 코드: ' + xhr.status + ' - ' + xhr.statusText);
+                }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>
