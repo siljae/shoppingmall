@@ -50,3 +50,4 @@ services:
 volumes:
   db_data:
   ngrinder_agent_data:  # nGrinder 에이전트 데이터 저장을 위한 볼륨
+  redis_data:

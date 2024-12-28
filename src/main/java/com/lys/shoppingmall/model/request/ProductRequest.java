@@ -10,5 +10,5 @@ import lombok.ToString;
 public class ProductRequest {
     private String name;
     private int price;
-    private int stock;
+    private int maxStock;
 }

@@ -11,14 +11,14 @@ public class ProductResponse {
     private int id;
     private String name;
     private int price;
-    private int stock;
+    private int maxStock;
 
-    public static ProductResponse valueOf(int id, String name, int price, int stock) {
+    public static ProductResponse valueOf(int id, String name, int price, int maxStock) {
         ProductResponse productResponse = new ProductResponse();
         productResponse.setId(id);
         productResponse.setName(name);
         productResponse.setPrice(price);
-        productResponse.setStock(stock);
+        productResponse.setMaxStock(maxStock);
         return productResponse;
     }
 }

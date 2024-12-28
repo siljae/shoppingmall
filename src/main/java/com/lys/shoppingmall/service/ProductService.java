@@ -1,12 +1,10 @@
 package com.lys.shoppingmall.service;
 
-import com.lys.shoppingmall.exception.OutOfStockException;
 import com.lys.shoppingmall.exception.ProductNotFoundException;
 import com.lys.shoppingmall.mapper.ProductMapper;
 import com.lys.shoppingmall.model.product.Product;
 import com.lys.shoppingmall.model.request.ProductRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,9 +29,11 @@ public class ProductService {
     }
 
     public Product addProduct(ProductRequest request) {
-        Product product = Product.createProduct(request.getName(), request.getPrice(), request.getStock());
+        Product product = Product.createProduct(request.getName(), request.getPrice(), request.getMaxStock());
 
         productMapper.insertProduct(product);
+        System.out.println("상품 추가하려고 왔음: " + product.getId());
+        productStockRedisService.updateRedisProductSaleCount(product.getId());
 
         return product;
     }
@@ -44,7 +44,7 @@ public class ProductService {
         if (updatedProduct == null) throw new ProductNotFoundException(id);
         if (product.getName() != null) updatedProduct.setName(product.getName());
         if (product.getPrice() > 0) updatedProduct.setPrice(product.getPrice());
-        if (product.getStock() >= 0) updatedProduct.setStock(product.getStock());
+        if (product.getMaxStock() >= 0) updatedProduct.setMaxStock(product.getMaxStock());
 
         productMapper.updateProduct(updatedProduct);
 
