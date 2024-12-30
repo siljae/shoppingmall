@@ -36,8 +36,8 @@ public class ProductStockRedisService {
         }
 
         // 판매 수량
-        Long productSale = fetchProductSalesOrInitialize(productId);
-        if (productSale >= maxStock) {
+        Long currentSaleCount = fetchProductSalesOrInitialize(productId);
+        if ((currentSaleCount + quantity) > maxStock) {
             throw new OutOfStockException(productId);
         }
 
