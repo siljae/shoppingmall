@@ -58,7 +58,7 @@ public class ProductServiceTest {
         ProductRequest request = new ProductRequest();
         request.setName("고구마");
         request.setPrice(100);
-        request.setStock(10);
+        request.setMaxStock(10);
 
         doAnswer(invacation -> {
             Product addedProduct = invacation.getArgument(0);
