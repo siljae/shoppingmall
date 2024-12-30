@@ -9,7 +9,7 @@
 
 ## 2. 한 번에 한 명만 재고 차감할 수 있도록 설정하기
 
-### 트랜잭션 격리 수준(Isolation Level)
+### 2-1. 트랜잭션 격리 수준(Isolation Level)
 | Isolation Level     | Dirty Read | Non-repeatable Read | Phantom Read |
 |---------------------|------------|----------------------|--------------|
 | Read Uncommitted    | O          | O                    | O            |
@@ -26,7 +26,7 @@
     - 트랜잭션을 순차적으로 실행되는 것을 보장합니다.
     - 조회 시 공유 락이 기본 값으로 설정됩니다.
 
-### SERIALIZABLE 로 격리 수준 변경하기   
+### 2-2. SERIALIZABLE 로 격리 수준 변경하기   
   - **격리 수준 변경**:
     - 공유 락 획득: 이 설정에 따라 모든 조회 시 공유 락을 획득하여 동시성 문제를 방지합니다.
     ```sql
@@ -35,26 +35,26 @@
   
 ![OrderPlantUML-Update-SharedLock](../images/OrderPlantUML-Update-SharedLock.png)
 ## 3. 구매 테스트
-### 1. 테스트 시나리오
+### 3-1. 테스트 시나리오
   - 쇼핑몰에서 이벤트를 열어서 다수의 유저가 선착순으로 구매하는 상황을 테스트로 진행하였습니다.
 
-### 2. nGrinder Setting
+### 3-2. nGrinder Setting
 ![nGrinder-PurchaseTest-SharedLock](../images/nGrinder-PurchaseTest-SharedLock.png)
 
-### 3. 테스트 결과
+### 3-3. 테스트 결과
   - 구매 기록 : 206건의 주문이 기록되었습니다. (구매 성공 비율: 41.2%)
   - 재고 상태: 설정한 재고는 500개였으며, 남은 재고는 294개입니다. (판매된 재고 비율: 41.2%)
 
 ![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock-SharedLock](../images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock-SharedLock.png)
 ![nGrinder-PurchaseTest-SharedLock-Report](../images/nGrinder-PurchaseTest-SharedLock-Report.png)
 
-### 4. 데드락 발생
+### 3-4. 데드락 발생
   - **서버 로그**:
     ```java
       java.sql.SQLException: Deadlock found when trying to get lock; try restarting transaction
     ```
     
-### 5. 왜 데드락이 발생하게 되었는가?
+### 3-5. 왜 데드락이 발생하게 되었는가?
   1. 거의 동시에 트랜잭션1과 트랜잭션2가 상품을 조회하면서 공유 락을 획득합니다.
   2. 트랜잭션1이 상품 재고를 차감하기 위해 쓰기 요청을 하지만 트랜잭션2의 공유 락으로 인해서 대기하게 됩니다.
   3. 마찬가지로 트랜잭션2가 상품 재고를 차감하기 위해 쓰기 요청을 하지만 트랜잭션1의 공유 락으로 인해서 대기하게 됩니다.
@@ -62,7 +62,7 @@
 
 ![Order-Concurrency-Error-SharedLock](../images/Order-Concurrency-Error-SharedLock.png)
    
-### 6. 개선 방안
+### 3-6. 개선 방안
   - 상품 조회 시 공유 락이 아닌 배타 락을 획득하도록 설정하여 한 번에 한 명만 재고를 조회하고 차감할 수 있도록 하면 동시성 문제와 데드락을 해결할 수 있을 것으로 예상됩니다.
 
 ## 4. 한 번에 한 명만 재고 조회 및 차감할 수 있게 설정하기
@@ -84,13 +84,13 @@
 ![OrderPlantUML-Update-DBLock](../images/OrderPlantUML-Update-DBLock.png)
 
 ## 5. 구매 테스트
-### 1. 테스트 시나리오
+### 5-1. 테스트 시나리오
   - 쇼핑몰에서 이벤트를 열어서 다수의 유저가 선착순으로 구매하는 상황을 테스트로 진행하였습니다.
 
-### 2. nGrinder Setting
+### 5-2. nGrinder Setting
 ![nGrinder-PurchaseTest](../images/nGrinder-PurchaseTest.png)
 
-### 3. 테스트 결과
+### 5-3. 테스트 결과
   - 구매 기록 : 500건의 주문이 기록되었습니다. (구매 성공 비율: 100%)
   - 재고 상태: 설정한 재고는 500개였으며, 남은 재고는 0개입니다. (판매된 재고 비율: 100%)
 
@@ -98,7 +98,7 @@
 ![nGrinder-PurchaseTest-ExclusiveLock-Report](../images/nGrinder-PurchaseTest-ExclusiveLock-Report.png)
 
 
-### 4. TPS 하락
+### 5-4. TPS 하락
 | Metric              | Before (TPS: 91.7) | After (TPS: 31.2) | Change             |
 |---------------------|--------------------|--------------------|---------------------|
 | Total Vusers        | 50                 | 50                 | -                   |
@@ -112,12 +112,12 @@
 
 - 위의 표를 보면 전체적으로 성능이 약 65.9% 저하된 것을 확인할 수 있습니다.
 
-### 5. 왜 성능이 감소하게 되었나?
+### 5-5. 왜 성능이 감소하게 되었나?
 - REPEATABLE READ 격리 수준에서 배타 락을 사용하면서 동시성 문제 및 데드락 문제는 해결했지만, 이로 인해 여러 트랜잭션들이 락을 획득하기 위해 경합하게 되고, 대기하는 트랙잭션의 수가 증가하게 되면서 전체 시스템의 처리량이 감소하게 되었습니다.
 
 ![Order-Concurrency-Error-ExclusiveLock](../images/Order-Concurrency-Error-ExclusiveLock.png)
 
-### 6. 개선 방안
+### 5-6. 개선 방안
   - 상품 재고와 같이 구매 기능이 호출될 때 마다 데이터베이스에 접근해서 조회해야 하는 데이터를 메모리 캐시에 저장해두고 데이터베이스에 대한 접근 횟수를 줄여서 응답 시간을 단축시켜 성능 개선이 이루어질 것으로 예상됩니다.
 
 다음편: 레디스 락을 통한 동시성 제어
