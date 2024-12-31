@@ -17,5 +17,5 @@ public interface OrderMapper {
     Order getOrderById(int id);
 
     @Select("SELECT COUNT(1) FROM orders WHERE product_id = #{id}")
-    int getOrderCountByProductId(int productId);
+    long getOrderCountByProductId(int productId);
 }

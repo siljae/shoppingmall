@@ -36,7 +36,7 @@ public class ProductStockRedisService {
         }
 
         // 판매 수량
-        Long currentSaleCount = fetchProductSalesOrInitialize(productId);
+        Long currentSaleCount = fetchProductSaleOrInitialize(productId);
         if ((currentSaleCount + quantity) > maxStock) {
             throw new OutOfStockException(productId);
         }
@@ -51,7 +51,7 @@ public class ProductStockRedisService {
         }
     }
 
-    private Long fetchProductSalesOrInitialize(int productId) {
+    private Long fetchProductSaleOrInitialize(int productId) {
         String productSaleKey = getProductKey(productId);
         boolean isExists = redissonClient.getAtomicLong(productSaleKey).isExists();
         if (!isExists) {
@@ -70,7 +70,7 @@ public class ProductStockRedisService {
             }
             boolean isExists = redissonClient.getAtomicLong(productSaleKey).isExists();
             if (!isExists) {
-                int saleCount = orderMapper.getOrderCountByProductId(productId);
+                long saleCount = orderMapper.getOrderCountByProductId(productId);
                 RAtomicLong rSaleCount = redissonClient.getAtomicLong(productSaleKey);
                 rSaleCount.set(saleCount);
             }
