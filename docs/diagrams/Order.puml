@@ -4,8 +4,9 @@ title 구매 API 시퀀스 다이어그램
 actor 사용자 as User
 participant "ApiProductController" as Controller
 participant "PurchaseService" as PurchaseService
-participant "ProductService" as ProductService
+participant "ProductStockRedisService" as ProductStockRedisService
 participant "ProductMapper" as ProductMapper
+participant "RedissonClient" as RedissonClient
 participant "OrderService" as OrderService
 participant "OrderMapper" as OrderMapper
 
@@ -15,30 +16,77 @@ activate Controller
 
 
 Controller -> PurchaseService : purchase(productId)
-note right of PurchaseService : 트랜잭션 시작
 activate PurchaseService
 
-PurchaseService -> ProductService : reduceStock(productId, 1)
-activate ProductService
+note right : 트랜잭션 시작
+PurchaseService -> ProductStockRedisService : reduceStock(productId, 1)
+activate ProductStockRedisService
 
-note right of ProductService : 배타 락 획득
-ProductService -> ProductMapper : getProductByIdForUpdate(productId)
+ProductStockRedisService -> ProductMapper : getProductStockById(productId)
 activate ProductMapper
-ProductMapper --> ProductService : Product
+ProductMapper --> ProductStockRedisService : maxStock
 deactivate ProductMapper
 
-opt product.stock < quantity
-ProductService --> Controller : OutOfStockException
+ProductStockRedisService -> ProductStockRedisService : fetchProductSaleOrInitialize(productId)
+activate ProductStockRedisService
+
+opt (isExists == false)
+    ProductStockRedisService -> ProductStockRedisService : updateRedisProductSaleCount(productId)
+    activate ProductStockRedisService
+
+    ProductStockRedisService -> RedissonClient : getLock(lock:productSaleKey)
+    note left : 레디스 락 획득
+    activate RedissonClient
+    RedissonClient --> ProductStockRedisService : lock
+    deactivate RedissonClient
+
+    opt Lock Failed
+        ProductStockRedisService --> ProductStockRedisService : LockNotAcquireException
+        deactivate ProductStockRedisService
+    end
+
+    opt Lock Success && (isExists == false)
+        ProductStockRedisService -> OrderMapper : getOrderCountByProductId(productId)
+        activate ProductStockRedisService
+        activate OrderMapper
+        OrderMapper --> ProductStockRedisService : saleCount
+        deactivate OrderMapper
+
+        ProductStockRedisService -> RedissonClient : getAtomicLong(productSaleKey).set(saleCount)
+        deactivate ProductStockRedisService
+        note left : 락 반납
+    end
+
+
 end
 
-ProductService -> ProductService : product.setStock(product.getStock() - quantity)
-ProductService -> ProductMapper : updateProductStock(product.getId(), product.getStock())
-activate ProductMapper
-ProductMapper --> ProductService :
-deactivate ProductMapper
 
-ProductService --> PurchaseService
-deactivate ProductService
+ProductStockRedisService -> RedissonClient : getAtomicLong(productSaleKey)
+activate RedissonClient
+RedissonClient --> ProductStockRedisService : rSaleCount
+deactivate RedissonClient
+
+ProductStockRedisService --> ProductStockRedisService : currentSaleCount
+deactivate ProductStockRedisService
+
+
+
+opt (currentSaleCount + quantity) > maxStock
+ProductStockRedisService --> Controller : OutOfStockException
+end
+
+ProductStockRedisService -> RedissonClient : getAtomicLong(productSaleKey).addAndGet(quantity)
+activate RedissonClient
+RedissonClient --> ProductStockRedisService : currentSale
+deactivate RedissonClient
+
+opt currentSale > maxStock
+ProductStockRedisService -> RedissonClient : rProductSale.addAndGet(-quantity)
+ProductStockRedisService --> Controller : OutOfStockException
+end
+
+ProductStockRedisService --> PurchaseService
+deactivate ProductStockRedisService
 
 PurchaseService -> OrderService : makeOrder(productId)
 activate OrderService
@@ -51,7 +99,7 @@ deactivate OrderService
 
 PurchaseService --> Controller : Order
 deactivate PurchaseService
-note right of PurchaseService : 배타 락 반납\n트랜잭션 종료
+note right : 트랜잭션 종료
 
 Controller --> User : 구매가 완료되었습니다.
 deactivate Controller

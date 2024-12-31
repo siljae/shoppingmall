@@ -10,7 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-public class RedisPingTest {
+public class RedisTest {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;

@@ -32,7 +32,6 @@ public class ProductService {
         Product product = Product.createProduct(request.getName(), request.getPrice(), request.getMaxStock());
 
         productMapper.insertProduct(product);
-        System.out.println("상품 추가하려고 왔음: " + product.getId());
         productStockRedisService.updateRedisProductSaleCount(product.getId());
 
         return product;
