@@ -6,7 +6,7 @@ participant "ApiProductController" as Controller
 participant "PurchaseService" as PurchaseService
 participant "ProductStockRedisService" as ProductStockRedisService
 participant "ProductMapper" as ProductMapper
-participant "RedissonClient" as RedissonClient
+database  "Redis" as RedissonClient
 participant "OrderService" as OrderService
 participant "OrderMapper" as OrderMapper
 
@@ -27,49 +27,12 @@ activate ProductMapper
 ProductMapper --> ProductStockRedisService : maxStock
 deactivate ProductMapper
 
-ProductStockRedisService -> ProductStockRedisService : fetchProductSaleOrInitialize(productId)
-activate ProductStockRedisService
-
-opt (isExists == false)
-    ProductStockRedisService -> ProductStockRedisService : updateRedisProductSaleCount(productId)
-    activate ProductStockRedisService
-
-    ProductStockRedisService -> RedissonClient : getLock(lock:productSaleKey)
-    note left : 레디스 락 획득
-    activate RedissonClient
-    RedissonClient --> ProductStockRedisService : lock
-    deactivate RedissonClient
-
-    opt Lock Failed
-        ProductStockRedisService --> ProductStockRedisService : LockNotAcquireException
-        deactivate ProductStockRedisService
-    end
-
-    opt Lock Success && (isExists == false)
-        ProductStockRedisService -> OrderMapper : getOrderCountByProductId(productId)
-        activate ProductStockRedisService
-        activate OrderMapper
-        OrderMapper --> ProductStockRedisService : saleCount
-        deactivate OrderMapper
-
-        ProductStockRedisService -> RedissonClient : getAtomicLong(productSaleKey).set(saleCount)
-        deactivate ProductStockRedisService
-        note left : 락 반납
-    end
-
-
-end
 
 
 ProductStockRedisService -> RedissonClient : getAtomicLong(productSaleKey)
 activate RedissonClient
-RedissonClient --> ProductStockRedisService : rSaleCount
+RedissonClient --> ProductStockRedisService : currentSaleCount
 deactivate RedissonClient
-
-ProductStockRedisService --> ProductStockRedisService : currentSaleCount
-deactivate ProductStockRedisService
-
-
 
 opt (currentSaleCount + quantity) > maxStock
 ProductStockRedisService --> Controller : OutOfStockException

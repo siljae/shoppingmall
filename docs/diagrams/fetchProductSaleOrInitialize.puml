@@ -1,0 +1,25 @@
+@startuml
+
+title 레디스에 상품 판매 수량이 존재 할 때
+
+participant "ProductStockRedisService" as ProductStockRedisService
+database "Redis" as Redis
+
+activate ProductStockRedisService
+ProductStockRedisService -> ProductStockRedisService : fetchProductSaleOrInitialize(productId)
+activate ProductStockRedisService
+
+ProductStockRedisService -> Redis : getAtomicLong(productSaleKey).isExists()
+Redis --> ProductStockRedisService : isExists
+
+opt isExists == false
+ProductStockRedisService -> ProductStockRedisService : updateRedisProductSaleCount(productId)
+end
+
+ProductStockRedisService -> Redis : getAtomicLong(productSaleKey)
+Redis --> ProductStockRedisService : rSaleCount
+
+ProductStockRedisService --> ProductStockRedisService : rSaleCount.get()
+deactivate ProductStockRedisService
+
+@enduml
