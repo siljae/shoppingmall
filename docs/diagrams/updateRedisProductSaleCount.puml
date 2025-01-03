@@ -1,0 +1,43 @@
+@startuml
+
+title 레디스에 판매 수량이 존재 하지 않을 때
+
+participant "ProductStockRedisService" as ProductStockRedisService
+database "Redis" as Redis
+participant "OrderMapper" as OrderMapper
+
+activate ProductStockRedisService
+
+ProductStockRedisService -> ProductStockRedisService : updateRedisProductSaleCount(productId)
+activate ProductStockRedisService
+
+ProductStockRedisService -> Redis : getLock("lock:" + productSaleKey)
+activate Redis
+Redis --> ProductStockRedisService : lock
+deactivate Redis
+
+opt lock.tryLock(waitTimeOut, durationTime, TimeUnit.SECOND) == false
+    ProductStockRedisService --> ProductStockRedisService : LockNotAcquireException(productId)
+    deactivate ProductStockRedisService
+end
+
+ProductStockRedisService -> Redis : getAtomicLong((productSaleKey).isExists()
+note left : 락 획득
+activate ProductStockRedisService
+activate Redis
+Redis --> ProductStockRedisService : isExists
+deactivate Redis
+
+opt isExists == false
+    ProductStockRedisService -> OrderMapper : getOrderCountByProductId(productId)
+    activate OrderMapper
+    OrderMapper --> ProductStockRedisService : saleCount
+    deactivate OrderMapper
+
+   ProductStockRedisService -> Redis : getAtomicLong(productSaleKey).set(saleCount)
+end
+
+ProductStockRedisService -> ProductStockRedisService : lock.unlock()
+note left : 락 반납
+
+@enduml

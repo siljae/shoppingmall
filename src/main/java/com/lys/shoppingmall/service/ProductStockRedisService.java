@@ -29,13 +29,11 @@ public class ProductStockRedisService {
     }
 
     public void reduceStock(int productId, int quantity) {
-        // 최대 재고 조회
         Integer maxStock = productMapper.getProductStockById(productId);
         if (maxStock == null) {
             throw new ProductNotFoundException(productId);
         }
 
-        // 판매 수량
         Long currentSaleCount = fetchProductSaleOrInitialize(productId);
         if ((currentSaleCount + quantity) > maxStock) {
             throw new OutOfStockException(productId);
@@ -44,7 +42,6 @@ public class ProductStockRedisService {
         RAtomicLong rProductSale = redissonClient.getAtomicLong(getProductKey(productId));
         long currentSale = rProductSale.addAndGet(quantity);
 
-        // 검증
         if (currentSale > maxStock) {
             rProductSale.addAndGet(-quantity);
             throw new OutOfStockException(productId);
