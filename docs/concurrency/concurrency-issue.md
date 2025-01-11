@@ -14,7 +14,7 @@
 ![nGrinder-PurchaseTest](../images/nGrinder-PurchaseTest.png)
 
 ### 2-3. 테스트 결과 (동시성 문제 발생)
-  - 구매 기록 : 1,654건의 주문이 기록되었습니다. (구매 성공 비율: 약 331%)
+  - 구매 기록: 1,654건의 주문이 기록되었습니다. (구매 성공 비율: 약 331%)
   - 재고 상태:  설정한 재고는 500개였으며, 남은 재고는 0개입니다. (판매된 재고 비율: 100%)
 
 ![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock](../images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock.png)
