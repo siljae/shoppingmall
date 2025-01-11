@@ -42,7 +42,7 @@
 ![nGrinder-PurchaseTest-SharedLock](../images/nGrinder-PurchaseTest-SharedLock.png)
 
 ### 3-3. 테스트 결과
-  - 구매 기록 : 206건의 주문이 기록되었습니다. (구매 성공 비율: 41.2%)
+  - 구매 기록: 206건의 주문이 기록되었습니다. (구매 성공 비율: 41.2%)
   - 재고 상태: 설정한 재고는 500개였으며, 남은 재고는 294개입니다. (판매된 재고 비율: 41.2%)
 
 ![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock-SharedLock](../images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock-SharedLock.png)
@@ -91,7 +91,7 @@
 ![nGrinder-PurchaseTest](../images/nGrinder-PurchaseTest.png)
 
 ### 5-3. 테스트 결과
-  - 구매 기록 : 500건의 주문이 기록되었습니다. (구매 성공 비율: 100%)
+  - 구매 기록: 500건의 주문이 기록되었습니다. (구매 성공 비율: 100%)
   - 재고 상태: 설정한 재고는 500개였으며, 남은 재고는 0개입니다. (판매된 재고 비율: 100%)
 
 ![nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock-DBLock](../images/nGrinder-PurchaseTest-Mysql-Orders-Count-And-Product-Stock-DBLock.png)
