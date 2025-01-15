@@ -24,7 +24,7 @@
 ![basic](./docs/images/Architecture.PNG)
 
 # 개발일지
-## [동시성 문제](docs/concurrency/concurrency-issue.md)
+## [동시성 제어의 어려움 및 개선 방안](docs/concurrency/concurrency-issue.md)
 동시성 제어의 어려움 및 개선 방안에 대해 설명합니다.
 
 ## [DB락을 통한 동시성 제어](docs/concurrency/DBLock.md)
