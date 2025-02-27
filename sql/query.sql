@@ -1,9 +1,3 @@
-USE shoppingmall;
-SHOW TABLES;
-
-DROP TABLE products;
-DROP TABLE orders;
-
 INSERT INTO products (name, price, max_stock) VALUES
 ('사과', 1000, 50),
 ('바나나', 800, 30),
@@ -21,9 +15,3 @@ INSERT INTO products (name, price, max_stock) VALUES
 ('오리 고기', 18000, 5),
 ('양고기', 20000, 3),
 ('생선', 7000, 7);
-
-SELECT * FROM products;
-
-INSERT INTO orders (product_id, order_date) VALUES (1, '2024-11-22 19:41:00');
-
-SELECT * FROM orders;
