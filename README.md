@@ -23,6 +23,10 @@
 # 아키텍처
 ![basic](./docs/images/Architecture.PNG)
 
+# 사용하기
+## [사용방법](docs/GettingStarted)
+소스 코드를 다운받아 IntelliJ, Docker 를 활용하여 서버를 구성하고 nGrinder를 통하여 직접 부하 테스트를 할 수 있습니다.
+
 # 개발일지
 ## [동시성 제어의 어려움 및 개선 방안](docs/concurrency/concurrency-issue.md)
 동시성 제어의 어려움 및 개선 방안에 대해 설명합니다.
