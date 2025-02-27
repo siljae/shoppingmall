@@ -12,7 +12,7 @@ Code > Download ZIP 다운로드 및 압축 풀기
 1. 인텔리J 실행하기
 2. File > Open
 
-## 3. Docker-compose 실행
+## 3. Docker-compose.yml 실행
 ![IntelliJ-02](./images/GettingStarted-IntelliJ-02.png)
 
 services 실행
